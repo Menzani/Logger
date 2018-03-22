@@ -1,16 +1,23 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.Level;
+import it.menzani.logger.impl.ConsoleConsumer;
+import it.menzani.logger.impl.TimestampFormatter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractLogger implements Logger {
-    protected Formatter formatter;
+    protected Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     protected Set<Consumer> consumers = new HashSet<>();
+
+    {
+        addConsumer(new ConsoleConsumer());
+    }
 
     public AbstractLogger addConsumer(Consumer consumer) {
         consumers.add(consumer);

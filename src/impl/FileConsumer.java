@@ -14,7 +14,7 @@ public final class FileConsumer implements Consumer {
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private final Path file;
-    private volatile Writer writer;
+    private Writer writer;
 
     public FileConsumer(Path file) {
         this.file = file;
@@ -23,11 +23,7 @@ public final class FileConsumer implements Consumer {
     @Override
     public void consume(String entry, Level level) throws IOException {
         if (writer == null) {
-            synchronized (this) {
-                if (writer == null) {
-                    writer = new OutputStreamWriter(Files.newOutputStream(file, StandardOpenOption.CREATE, StandardOpenOption.APPEND));
-                }
-            }
+            writer = new OutputStreamWriter(Files.newOutputStream(file, StandardOpenOption.CREATE, StandardOpenOption.APPEND));
         }
         writer.write(entry);
         writer.write(LINE_SEPARATOR);

@@ -34,6 +34,9 @@ public final class AsynchronousLogger extends AbstractLogger {
         public void run() {
             while (true) {
                 LogEntry entry = consumeOne();
+                boolean rejected = filters.parallelStream()
+                        .anyMatch(newFilterFunction(entry));
+                if (rejected) continue;
                 String formattedEntry = doFormat(entry);
                 if (formattedEntry == null) continue;
                 consumers.parallelStream()

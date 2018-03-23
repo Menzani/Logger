@@ -3,6 +3,7 @@ package it.menzani.logger.api;
 import it.menzani.logger.Level;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.impl.ConsoleConsumer;
+import it.menzani.logger.impl.LevelFilter;
 import it.menzani.logger.impl.TimestampFormatter;
 
 import java.io.PrintWriter;
@@ -11,13 +12,32 @@ import java.io.Writer;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
+    protected Set<Filter> filters = new HashSet<>();
     private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     protected Set<Consumer> consumers = new HashSet<>();
 
     {
         addConsumer(new ConsoleConsumer());
+    }
+
+    public AbstractLogger withVerbosity(Level level) {
+        return addFilter(new LevelFilter(level));
+    }
+
+    public AbstractLogger withDefaultVerbosity() {
+        return withVerbosity(Level.INFORMATION);
+    }
+
+    public AbstractLogger disable() {
+        return addFilter(entry -> true);
+    }
+
+    public AbstractLogger setFilters(Set<Filter> filters) {
+        this.filters = filters;
+        return this;
     }
 
     public AbstractLogger setFormatter(Formatter formatter) {
@@ -27,6 +47,11 @@ public abstract class AbstractLogger implements Logger {
 
     public AbstractLogger setConsumers(Set<Consumer> consumers) {
         this.consumers = consumers;
+        return this;
+    }
+
+    public AbstractLogger addFilter(Filter filter) {
+        filters.add(filter);
         return this;
     }
 
@@ -68,6 +93,18 @@ public abstract class AbstractLogger implements Logger {
             t.printStackTrace(new PrintWriter(writer));
             return writer.toString();
         });
+    }
+
+    protected static Predicate<Filter> newFilterFunction(LogEntry entry) {
+        return filter -> {
+            try {
+                return filter.reject(entry);
+            } catch (Exception e) {
+                loggerError(Filter.class, filter);
+                e.printStackTrace();
+                return true;
+            }
+        };
     }
 
     protected String doFormat(LogEntry entry) {

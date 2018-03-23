@@ -33,29 +33,19 @@ public final class AsynchronousLogger extends AbstractLogger {
         @Override
         public void run() {
             while (true) {
-                LogEntry entry;
-                try {
-                    entry = queue.take();
-                } catch (InterruptedException e) {
-                    throw new AssertionError(e);
-                }
-                String formattedEntry;
-                try {
-                    formattedEntry = formatter.format(entry);
-                } catch (Exception e) {
-                    formatterError();
-                    e.printStackTrace();
-                    continue;
-                }
+                LogEntry entry = consumeOne();
+                String formattedEntry = doFormat(entry);
+                if (formattedEntry == null) continue;
                 consumers.parallelStream()
-                        .forEach(consumer -> {
-                            try {
-                                consumer.consume(formattedEntry, entry.getLevel());
-                            } catch (Exception e) {
-                                consumerError(consumer);
-                                e.printStackTrace();
-                            }
-                        });
+                        .forEach(newConsumerFunction(formattedEntry, entry.getLevel()));
+            }
+        }
+
+        private LogEntry consumeOne() {
+            try {
+                return queue.take();
+            } catch (InterruptedException e) {
+                throw new AssertionError(e);
             }
         }
     }

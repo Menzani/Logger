@@ -1,6 +1,7 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.Level;
+import it.menzani.logger.LogEntry;
 import it.menzani.logger.impl.ConsoleConsumer;
 import it.menzani.logger.impl.TimestampFormatter;
 
@@ -12,11 +13,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractLogger implements Logger {
-    protected Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     protected Set<Consumer> consumers = new HashSet<>();
 
     {
         addConsumer(new ConsoleConsumer());
+    }
+
+    public AbstractLogger setFormatter(Formatter formatter) {
+        this.formatter = formatter;
+        return this;
+    }
+
+    public AbstractLogger setConsumers(Set<Consumer> consumers) {
+        this.consumers = consumers;
+        return this;
     }
 
     public AbstractLogger addConsumer(Consumer consumer) {
@@ -59,12 +70,25 @@ public abstract class AbstractLogger implements Logger {
         });
     }
 
-    protected void formatterError() {
-        loggerError(Formatter.class, formatter);
+    protected String doFormat(LogEntry entry) {
+        try {
+            return formatter.format(entry);
+        } catch (Exception e) {
+            loggerError(Formatter.class, formatter);
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    protected static void consumerError(Consumer consumer) {
-        loggerError(Consumer.class, consumer);
+    protected static java.util.function.Consumer<Consumer> newConsumerFunction(String entry, Level level) {
+        return consumer -> {
+            try {
+                consumer.consume(entry, level);
+            } catch (Exception e) {
+                loggerError(Consumer.class, consumer);
+                e.printStackTrace();
+            }
+        };
     }
 
     private static void loggerError(Class<?> apiClass, Object implObject) {

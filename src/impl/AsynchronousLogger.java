@@ -3,23 +3,16 @@ package it.menzani.logger.impl;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.AbstractLogger;
 
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public final class AsynchronousLogger extends AbstractLogger {
-    private final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-        private final ThreadFactory delegate = Executors.defaultThreadFactory();
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = delegate.newThread(r);
-            thread.setDaemon(true);
-            return thread;
-        }
-    });
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
     {
-        executor.execute(new Consumer());
+        Thread thread = new Thread(new Consumer(), getClass().getSimpleName() + " daemon");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @Override

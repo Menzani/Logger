@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
+    private static final String API_MESSAGE_PREFIX = "[Logger] ";
+
     protected Set<Filter> filters = new HashSet<>();
     private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     protected Set<Consumer> consumers = new HashSet<>();
@@ -187,7 +189,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     private static void printLoggerError(Class<?> apiClass, Object implObject) {
-        System.err.println('[' + ReservedLevel.LOGGER.getMarker() + "] Could not pass log entry to " +
+        System.err.println(API_MESSAGE_PREFIX + "Could not pass log entry to " +
                 apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
 }

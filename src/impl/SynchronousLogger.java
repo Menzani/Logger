@@ -1,9 +1,9 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.Level;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.AbstractLogger;
 import it.menzani.logger.api.LazyMessage;
+import it.menzani.logger.api.Level;
 
 public final class SynchronousLogger extends AbstractLogger {
     @Override

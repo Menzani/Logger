@@ -1,7 +1,7 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.Level;
 import it.menzani.logger.api.Consumer;
+import it.menzani.logger.api.Level;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

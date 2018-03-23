@@ -1,7 +1,5 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.Level;
-
 public interface Logger {
     void fine(LazyMessage lazyMessage);
 
@@ -14,6 +12,8 @@ public interface Logger {
     void fail(LazyMessage lazyMessage);
 
     void throwable(Throwable t, LazyMessage lazyMessage);
+
+    void throwable(Level level, Throwable t, LazyMessage lazyMessage);
 
     void log(Level level, LazyMessage lazyMessage);
 }

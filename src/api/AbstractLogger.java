@@ -1,10 +1,10 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.EvaluationException;
-import it.menzani.logger.Level;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.impl.ConsoleConsumer;
 import it.menzani.logger.impl.LevelFilter;
+import it.menzani.logger.impl.StandardLevel;
 import it.menzani.logger.impl.TimestampFormatter;
 
 import java.io.PrintWriter;
@@ -16,8 +16,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
-    private static final String API_MESSAGE_PREFIX = "[Logger] ";
-
     protected Set<Filter> filters = new HashSet<>();
     private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     protected Set<Consumer> consumers = new HashSet<>();
@@ -31,7 +29,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     public AbstractLogger withDefaultVerbosity() {
-        return withVerbosity(Level.INFORMATION);
+        return withVerbosity(StandardLevel.INFORMATION);
     }
 
     public AbstractLogger disable() {
@@ -65,33 +63,38 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void fine(LazyMessage lazyMessage) {
-        log(Level.FINE, lazyMessage);
+        log(StandardLevel.FINE, lazyMessage);
     }
 
     @Override
     public void info(LazyMessage lazyMessage) {
-        log(Level.INFORMATION, lazyMessage);
+        log(StandardLevel.INFORMATION, lazyMessage);
     }
 
     @Override
     public void header(LazyMessage lazyMessage) {
-        log(Level.HEADER, lazyMessage);
+        log(StandardLevel.HEADER, lazyMessage);
     }
 
     @Override
     public void warn(LazyMessage lazyMessage) {
-        log(Level.WARNING, lazyMessage);
+        log(StandardLevel.WARNING, lazyMessage);
     }
 
     @Override
     public void fail(LazyMessage lazyMessage) {
-        log(Level.FAILURE, lazyMessage);
+        log(StandardLevel.FAILURE, lazyMessage);
     }
 
     @Override
     public void throwable(Throwable t, LazyMessage lazyMessage) {
-        fail(lazyMessage);
-        fail(() -> {
+        throwable(StandardLevel.FAILURE, t, lazyMessage);
+    }
+
+    @Override
+    public void throwable(Level level, Throwable t, LazyMessage lazyMessage) {
+        log(level, lazyMessage);
+        log(level, () -> {
             Writer writer = new StringWriter();
             t.printStackTrace(new PrintWriter(writer));
             return writer.toString();
@@ -114,7 +117,7 @@ public abstract class AbstractLogger implements Logger {
         try {
             return formatter.format(entry);
         } catch (EvaluationException e) {
-            throwable(e.getCause(), () -> API_MESSAGE_PREFIX + "Could not evaluate lazy message at level: " + entry.getLevel().getMarker());
+            throwable(ReservedLevel.LOGGER, e.getCause(), () -> "Could not evaluate lazy message at level: " + entry.getLevel().getMarker());
         } catch (Exception e) {
             loggerError(Formatter.class, formatter);
             e.printStackTrace();
@@ -134,6 +137,7 @@ public abstract class AbstractLogger implements Logger {
     }
 
     private static void loggerError(Class<?> apiClass, Object implObject) {
-        System.err.println(API_MESSAGE_PREFIX + "Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
+        System.err.println('[' + ReservedLevel.LOGGER.getMarker() + "] Could not pass log entry to " +
+                apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
 }

@@ -2,8 +2,6 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.AbstractLogger;
-import it.menzani.logger.api.LazyMessage;
-import it.menzani.logger.api.Level;
 
 import java.util.concurrent.*;
 
@@ -25,8 +23,8 @@ public final class AsynchronousLogger extends AbstractLogger {
     }
 
     @Override
-    public void log(Level level, LazyMessage lazyMessage) {
-        queue.add(new LogEntry(level, lazyMessage));
+    protected void doLog(LogEntry entry) {
+        queue.add(entry);
     }
 
     private final class Consumer implements Runnable {

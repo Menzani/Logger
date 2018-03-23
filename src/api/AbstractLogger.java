@@ -94,19 +94,69 @@ public abstract class AbstractLogger implements Logger {
     @Override
     public void throwable(Level level, Throwable t, LazyMessage lazyMessage) {
         log(level, lazyMessage);
-        log(level, () -> {
-            Writer writer = new StringWriter();
-            t.printStackTrace(new PrintWriter(writer));
-            return writer.toString();
-        });
+        log(level, () -> throwableToString(t));
     }
+
+    @Override
+    public void log(Level level, LazyMessage lazyMessage) {
+        doLog(new LogEntry(level, null, lazyMessage));
+    }
+
+    @Override
+    public void fine(Object message) {
+        log(StandardLevel.FINE, message);
+    }
+
+    @Override
+    public void info(Object message) {
+        log(StandardLevel.INFORMATION, message);
+    }
+
+    @Override
+    public void header(Object message) {
+        log(StandardLevel.HEADER, message);
+    }
+
+    @Override
+    public void warn(Object message) {
+        log(StandardLevel.WARNING, message);
+    }
+
+    @Override
+    public void fail(Object message) {
+        log(StandardLevel.FAILURE, message);
+    }
+
+    @Override
+    public void throwable(Throwable t, Object message) {
+        throwable(StandardLevel.FAILURE, t, message);
+    }
+
+    @Override
+    public void throwable(Level level, Throwable t, Object message) {
+        log(level, message);
+        log(level, throwableToString(t));
+    }
+
+    private static String throwableToString(Throwable t) {
+        Writer writer = new StringWriter();
+        t.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
+    }
+
+    @Override
+    public void log(Level level, Object message) {
+        doLog(new LogEntry(level, message, null));
+    }
+
+    protected abstract void doLog(LogEntry entry);
 
     protected static Predicate<Filter> newFilterFunction(LogEntry entry) {
         return filter -> {
             try {
                 return filter.reject(entry);
             } catch (Exception e) {
-                loggerError(Filter.class, filter);
+                printLoggerError(Filter.class, filter);
                 e.printStackTrace();
                 return true;
             }
@@ -117,9 +167,9 @@ public abstract class AbstractLogger implements Logger {
         try {
             return formatter.format(entry);
         } catch (EvaluationException e) {
-            throwable(ReservedLevel.LOGGER, e.getCause(), () -> "Could not evaluate lazy message at level: " + entry.getLevel().getMarker());
+            throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + entry.getLevel().getMarker());
         } catch (Exception e) {
-            loggerError(Formatter.class, formatter);
+            printLoggerError(Formatter.class, formatter);
             e.printStackTrace();
         }
         return null;
@@ -130,13 +180,13 @@ public abstract class AbstractLogger implements Logger {
             try {
                 consumer.consume(entry, level);
             } catch (Exception e) {
-                loggerError(Consumer.class, consumer);
+                printLoggerError(Consumer.class, consumer);
                 e.printStackTrace();
             }
         };
     }
 
-    private static void loggerError(Class<?> apiClass, Object implObject) {
+    private static void printLoggerError(Class<?> apiClass, Object implObject) {
         System.err.println('[' + ReservedLevel.LOGGER.getMarker() + "] Could not pass log entry to " +
                 apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }

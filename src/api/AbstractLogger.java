@@ -1,5 +1,6 @@
 package it.menzani.logger.api;
 
+import it.menzani.logger.EvaluationException;
 import it.menzani.logger.Level;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.impl.ConsoleConsumer;
@@ -15,6 +16,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
+    private static final String API_MESSAGE_PREFIX = "[Logger] ";
+
     protected Set<Filter> filters = new HashSet<>();
     private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     protected Set<Consumer> consumers = new HashSet<>();
@@ -110,11 +113,13 @@ public abstract class AbstractLogger implements Logger {
     protected String doFormat(LogEntry entry) {
         try {
             return formatter.format(entry);
+        } catch (EvaluationException e) {
+            throwable(e.getCause(), () -> API_MESSAGE_PREFIX + "Could not evaluate lazy message at level: " + entry.getLevel().getMarker());
         } catch (Exception e) {
             loggerError(Formatter.class, formatter);
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 
     protected static java.util.function.Consumer<Consumer> newConsumerFunction(String entry, Level level) {
@@ -129,6 +134,6 @@ public abstract class AbstractLogger implements Logger {
     }
 
     private static void loggerError(Class<?> apiClass, Object implObject) {
-        System.err.println("[Logger] Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
+        System.err.println(API_MESSAGE_PREFIX + "Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
 }

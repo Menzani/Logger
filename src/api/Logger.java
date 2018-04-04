@@ -1,6 +1,10 @@
 package it.menzani.logger.api;
 
 public interface Logger {
+    void trace(LazyMessage lazyMessage);
+
+    void debug(LazyMessage lazyMessage);
+
     void fine(LazyMessage lazyMessage);
 
     void info(LazyMessage lazyMessage);
@@ -15,7 +19,13 @@ public interface Logger {
 
     void throwable(Level level, Throwable t, LazyMessage lazyMessage);
 
+    void fatal(LazyMessage lazyMessage);
+
     void log(Level level, LazyMessage lazyMessage);
+
+    void trace(Object message);
+
+    void debug(Object message);
 
     void fine(Object message);
 
@@ -30,6 +40,8 @@ public interface Logger {
     void throwable(Throwable t, Object message);
 
     void throwable(Level level, Throwable t, Object message);
+
+    void fatal(Object message);
 
     void log(Level level, Object message);
 }

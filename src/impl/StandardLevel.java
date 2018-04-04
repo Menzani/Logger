@@ -3,11 +3,14 @@ package it.menzani.logger.impl;
 import it.menzani.logger.api.Level;
 
 public enum StandardLevel implements Level {
-    FINE(4, "FINE"),
-    INFORMATION(3, "INFO"),
-    HEADER(2, "HEADER"),
-    WARNING(1, "WARNING"),
-    FAILURE(0, "FAILURE");
+    TRACE(7_000_000, "TRACE"),
+    DEBUG(6_000_000, "DEBUG"),
+    FINE(5_000_000, "FINE"),
+    INFORMATION(4_000_000, "INFO"),
+    HEADER(3_000_000, "HEADER"),
+    WARNING(2_000_000, "WARN"),
+    FAILURE(1_000_000, "FAIL"),
+    FATAL(0, "FATAL");
 
     private final int verbosity;
     private final String marker;

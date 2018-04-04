@@ -64,6 +64,16 @@ public abstract class AbstractLogger implements Logger {
     }
 
     @Override
+    public void trace(LazyMessage lazyMessage) {
+        log(StandardLevel.TRACE, lazyMessage);
+    }
+
+    @Override
+    public void debug(LazyMessage lazyMessage) {
+        log(StandardLevel.DEBUG, lazyMessage);
+    }
+
+    @Override
     public void fine(LazyMessage lazyMessage) {
         log(StandardLevel.FINE, lazyMessage);
     }
@@ -100,8 +110,23 @@ public abstract class AbstractLogger implements Logger {
     }
 
     @Override
+    public void fatal(LazyMessage lazyMessage) {
+        log(StandardLevel.FATAL, lazyMessage);
+    }
+
+    @Override
     public void log(Level level, LazyMessage lazyMessage) {
         doLog(new LogEntry(level, null, lazyMessage));
+    }
+
+    @Override
+    public void trace(Object message) {
+        log(StandardLevel.TRACE, message);
+    }
+
+    @Override
+    public void debug(Object message) {
+        log(StandardLevel.DEBUG, message);
     }
 
     @Override
@@ -144,6 +169,11 @@ public abstract class AbstractLogger implements Logger {
         Writer writer = new StringWriter();
         t.printStackTrace(new PrintWriter(writer));
         return writer.toString();
+    }
+
+    @Override
+    public void fatal(Object message) {
+        log(StandardLevel.FATAL, message);
     }
 
     @Override

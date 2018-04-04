@@ -2,10 +2,7 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.EvaluationException;
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.impl.ConsoleConsumer;
-import it.menzani.logger.impl.LevelFilter;
-import it.menzani.logger.impl.StandardLevel;
-import it.menzani.logger.impl.TimestampFormatter;
+import it.menzani.logger.impl.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,18 +21,6 @@ public abstract class AbstractLogger implements Logger {
 
     {
         addConsumer(new ConsoleConsumer());
-    }
-
-    public AbstractLogger withVerbosity(Level level) {
-        return addFilter(new LevelFilter(level));
-    }
-
-    public AbstractLogger withDefaultVerbosity() {
-        return withVerbosity(StandardLevel.INFORMATION);
-    }
-
-    public AbstractLogger disable() {
-        return addFilter(entry -> true);
     }
 
     public AbstractLogger setFilters(Set<Filter> filters) {
@@ -60,6 +45,21 @@ public abstract class AbstractLogger implements Logger {
 
     public AbstractLogger addConsumer(Consumer consumer) {
         consumers.add(consumer);
+        return this;
+    }
+
+    public AbstractLogger withVerbosity(Level level) {
+        addFilter(new LevelFilter(level));
+        return this;
+    }
+
+    public AbstractLogger withDefaultVerbosity() {
+        withVerbosity(StandardLevel.INFORMATION);
+        return this;
+    }
+
+    public AbstractLogger disable() {
+        addFilter(new RejectAllFilter());
         return this;
     }
 
@@ -165,12 +165,6 @@ public abstract class AbstractLogger implements Logger {
         log(level, throwableToString(t));
     }
 
-    private static String throwableToString(Throwable t) {
-        Writer writer = new StringWriter();
-        t.printStackTrace(new PrintWriter(writer));
-        return writer.toString();
-    }
-
     @Override
     public void fatal(Object message) {
         log(StandardLevel.FATAL, message);
@@ -179,6 +173,12 @@ public abstract class AbstractLogger implements Logger {
     @Override
     public void log(Level level, Object message) {
         doLog(new LogEntry(level, message, null));
+    }
+
+    private static String throwableToString(Throwable t) {
+        Writer writer = new StringWriter();
+        t.printStackTrace(new PrintWriter(writer));
+        return writer.toString();
     }
 
     protected abstract void doLog(LogEntry entry);

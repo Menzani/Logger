@@ -10,6 +10,8 @@ public final class ConsoleConsumer implements Consumer {
             return;
         }
         switch ((StandardLevel) level) {
+            case TRACE:
+            case DEBUG:
             case FINE:
             case INFORMATION:
             case HEADER:
@@ -17,6 +19,7 @@ public final class ConsoleConsumer implements Consumer {
                 System.out.println(entry);
                 break;
             case FAILURE:
+            case FATAL:
                 System.err.println(entry);
                 break;
         }

@@ -4,4 +4,6 @@ public interface Level {
     int getVerbosity();
 
     String getMarker();
+
+    boolean isError();
 }

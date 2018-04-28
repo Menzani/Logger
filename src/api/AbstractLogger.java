@@ -175,7 +175,7 @@ public abstract class AbstractLogger implements Logger {
         doLog(new LogEntry(level, message, null));
     }
 
-    private static String throwableToString(Throwable t) {
+    static String throwableToString(Throwable t) {
         Writer writer = new StringWriter();
         t.printStackTrace(new PrintWriter(writer));
         return writer.toString();

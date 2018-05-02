@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.Collections;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,7 +17,7 @@ public abstract class AbstractLoggerTest {
     @BeforeEach
     void init() {
         consumer = new BufferConsumer();
-        logger = newLogger().setConsumers(Collections.singleton(consumer));
+        logger = newLogger().setConsumers(consumer);
     }
 
     protected abstract AbstractLogger newLogger();

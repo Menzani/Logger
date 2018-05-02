@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -15,16 +16,25 @@ import java.util.function.Predicate;
 public abstract class AbstractLogger implements Logger {
     private static final String API_MESSAGE_PREFIX = "[Logger] ";
 
-    protected Set<Filter> filters = new HashSet<>();
+    private final Set<Filter> filters = new HashSet<>();
     private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    protected Set<Consumer> consumers = new HashSet<>();
+    private final Set<Consumer> consumers = new HashSet<>();
 
     {
         addConsumer(new ConsoleConsumer());
     }
 
-    public AbstractLogger setFilters(Set<Filter> filters) {
-        this.filters = filters;
+    protected Set<Filter> getFilters() {
+        return filters;
+    }
+
+    protected Set<Consumer> getConsumers() {
+        return consumers;
+    }
+
+    public AbstractLogger setFilters(Filter... filters) {
+        this.filters.clear();
+        Collections.addAll(this.filters, filters);
         return this;
     }
 
@@ -33,8 +43,9 @@ public abstract class AbstractLogger implements Logger {
         return this;
     }
 
-    public AbstractLogger setConsumers(Set<Consumer> consumers) {
-        this.consumers = consumers;
+    public AbstractLogger setConsumers(Consumer... consumers) {
+        this.consumers.clear();
+        Collections.addAll(this.consumers, consumers);
         return this;
     }
 
@@ -199,7 +210,8 @@ public abstract class AbstractLogger implements Logger {
         try {
             return formatter.format(entry);
         } catch (EvaluationException e) {
-            throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + entry.getLevel().getMarker());
+            String levelMarker = entry.getLevel().getMarker();
+            throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + levelMarker);
         } catch (Exception e) {
             printLoggerError(Formatter.class, formatter);
             e.printStackTrace();

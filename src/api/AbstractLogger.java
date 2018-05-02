@@ -7,7 +7,9 @@ import it.menzani.logger.impl.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +19,7 @@ public abstract class AbstractLogger implements Logger {
     private static final String API_MESSAGE_PREFIX = "[Logger] ";
 
     private final Set<Filter> filters = new HashSet<>();
-    private Formatter formatter = new TimestampFormatter(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    private Formatter formatter = new TimestampFormatter(LocalDateTime::now, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
     private final Set<Consumer> consumers = new HashSet<>();
 
     {

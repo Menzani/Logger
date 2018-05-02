@@ -22,7 +22,7 @@ enum ReservedLevel implements Level {
     public String getMarker() {
         return marker;
     }
-	
+
     @Override
     public boolean isError() {
         return error;

@@ -24,8 +24,8 @@ public final class LogEntry {
         }
         try {
             return lazyMessage.evaluate();
-        } catch (Throwable t) {
-            throw new EvaluationException(t);
+        } catch (Exception e) {
+            throw new EvaluationException(e);
         }
     }
 }

@@ -1,12 +1,12 @@
 package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.api.AbstractLogger;
+import it.menzani.logger.api.PipelineLogger;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public final class AsynchronousLogger extends AbstractLogger {
+public final class AsynchronousLogger extends PipelineLogger {
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
     {

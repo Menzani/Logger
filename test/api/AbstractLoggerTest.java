@@ -21,7 +21,7 @@ public abstract class AbstractLoggerTest {
         logger = newLogger().setPipelines(Pipeline.newConsoleLocalPipeline().setConsumers(consumer));
     }
 
-    protected abstract AbstractLogger newLogger();
+    protected abstract PipelineLogger newLogger();
 
     @ParameterizedTest
     @EnumSource(StandardLevel.class)

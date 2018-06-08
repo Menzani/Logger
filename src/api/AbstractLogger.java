@@ -2,50 +2,15 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.EvaluationException;
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.Pipeline;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
     private static final String API_MESSAGE_PREFIX = "[Logger] ";
-
-    private final Set<Pipeline> pipelines = new HashSet<>();
-
-    private boolean disabled;
-
-    {
-        addPipeline(Pipeline.newConsoleLocalPipeline());
-    }
-
-    protected Set<Pipeline> getPipelines() {
-        return pipelines;
-    }
-
-    public AbstractLogger setPipelines(Pipeline... pipelines) {
-        this.pipelines.clear();
-        Collections.addAll(this.pipelines, pipelines);
-        return this;
-    }
-
-    public AbstractLogger addPipeline(Pipeline pipeline) {
-        pipelines.add(pipeline);
-        return this;
-    }
-
-    public void disable() {
-        disabled = true;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
 
     @Override
     public void trace(LazyMessage lazyMessage) {
@@ -100,7 +65,7 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void log(Level level, LazyMessage lazyMessage) {
-        _doLog(new LogEntry(level, null, lazyMessage));
+        tryLog(new LogEntry(level, null, lazyMessage));
     }
 
     @Override
@@ -156,7 +121,7 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void log(Level level, Object message) {
-        _doLog(new LogEntry(level, message, null));
+        tryLog(new LogEntry(level, message, null));
     }
 
     static String throwableToString(Throwable t) {
@@ -165,12 +130,7 @@ public abstract class AbstractLogger implements Logger {
         return writer.toString();
     }
 
-    private void _doLog(LogEntry entry) {
-        if (disabled) return;
-        doLog(entry);
-    }
-
-    protected abstract void doLog(LogEntry entry);
+    protected abstract void tryLog(LogEntry entry);
 
     protected static Predicate<Filter> newFilterFunction(LogEntry entry) {
         return filter -> {

@@ -1,10 +1,10 @@
 package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.api.AbstractLogger;
 import it.menzani.logger.Pipeline;
+import it.menzani.logger.api.PipelineLogger;
 
-public final class SynchronousLogger extends AbstractLogger {
+public final class SynchronousLogger extends PipelineLogger {
     @Override
     protected void doLog(LogEntry entry) {
         for (Pipeline pipeline : getPipelines()) {

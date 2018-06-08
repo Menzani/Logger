@@ -25,13 +25,15 @@ public final class AsynchronousLogger extends AbstractLogger {
         public void run() {
             while (true) {
                 LogEntry entry = consumeOne();
-                boolean rejected = getFilters().parallelStream()
-                        .anyMatch(newFilterFunction(entry));
-                if (rejected) continue;
-                String formattedEntry = doFormat(entry);
-                if (formattedEntry == null) continue;
-                getConsumers().parallelStream()
-                        .forEach(newConsumerFunction(formattedEntry, entry.getLevel()));
+                getPipelines().parallelStream().forEach(pipeline -> {
+                    boolean rejected = pipeline.getFilters().parallelStream()
+                            .anyMatch(newFilterFunction(entry));
+                    if (rejected) return;
+                    String formattedEntry = doFormat(pipeline.getFormatter(), entry);
+                    if (formattedEntry == null) return;
+                    pipeline.getConsumers().parallelStream()
+                            .forEach(newConsumerFunction(formattedEntry, entry.getLevel()));
+                });
             }
         }
 

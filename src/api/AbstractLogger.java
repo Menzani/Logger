@@ -2,14 +2,12 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.EvaluationException;
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.impl.*;
+import it.menzani.logger.Pipeline;
+import it.menzani.logger.impl.StandardLevel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,61 +16,24 @@ import java.util.function.Predicate;
 public abstract class AbstractLogger implements Logger {
     private static final String API_MESSAGE_PREFIX = "[Logger] ";
 
-    private final Set<Filter> filters = new HashSet<>();
-    private Formatter formatter = new TimestampFormatter(LocalDateTime::now, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
-    private final Set<Consumer> consumers = new HashSet<>();
+    private final Set<Pipeline> pipelines = new HashSet<>();
 
     {
-        addConsumer(new ConsoleConsumer());
+        addPipeline(Pipeline.newConsoleLocalPipeline());
     }
 
-    protected Set<Filter> getFilters() {
-        return filters;
+    protected Set<Pipeline> getPipelines() {
+        return pipelines;
     }
 
-    protected Set<Consumer> getConsumers() {
-        return consumers;
-    }
-
-    public AbstractLogger setFilters(Filter... filters) {
-        this.filters.clear();
-        Collections.addAll(this.filters, filters);
+    public AbstractLogger setPipelines(Pipeline... pipelines) {
+        this.pipelines.clear();
+        Collections.addAll(this.pipelines, pipelines);
         return this;
     }
 
-    public AbstractLogger setFormatter(Formatter formatter) {
-        this.formatter = formatter;
-        return this;
-    }
-
-    public AbstractLogger setConsumers(Consumer... consumers) {
-        this.consumers.clear();
-        Collections.addAll(this.consumers, consumers);
-        return this;
-    }
-
-    public AbstractLogger addFilter(Filter filter) {
-        filters.add(filter);
-        return this;
-    }
-
-    public AbstractLogger addConsumer(Consumer consumer) {
-        consumers.add(consumer);
-        return this;
-    }
-
-    public AbstractLogger withVerbosity(Level level) {
-        addFilter(new LevelFilter(level));
-        return this;
-    }
-
-    public AbstractLogger withDefaultVerbosity() {
-        withVerbosity(StandardLevel.INFORMATION);
-        return this;
-    }
-
-    public AbstractLogger disable() {
-        addFilter(new RejectAllFilter());
+    public AbstractLogger addPipeline(Pipeline pipeline) {
+        pipelines.add(pipeline);
         return this;
     }
 
@@ -208,7 +169,7 @@ public abstract class AbstractLogger implements Logger {
         };
     }
 
-    protected String doFormat(LogEntry entry) {
+    protected String doFormat(Formatter formatter, LogEntry entry) {
         try {
             return formatter.format(entry);
         } catch (EvaluationException e) {

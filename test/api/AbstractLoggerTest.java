@@ -1,5 +1,6 @@
 package it.menzani.logger.api;
 
+import it.menzani.logger.Pipeline;
 import it.menzani.logger.impl.BufferConsumer;
 import it.menzani.logger.impl.StandardLevel;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ public abstract class AbstractLoggerTest {
     @BeforeEach
     void init() {
         consumer = new BufferConsumer();
-        logger = newLogger().setConsumers(consumer);
+        logger = newLogger().setPipelines(Pipeline.newConsoleLocalPipeline().setConsumers(consumer));
     }
 
     protected abstract AbstractLogger newLogger();

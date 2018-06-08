@@ -18,6 +18,8 @@ public abstract class AbstractLogger implements Logger {
 
     private final Set<Pipeline> pipelines = new HashSet<>();
 
+    private boolean disabled;
+
     {
         addPipeline(Pipeline.newConsoleLocalPipeline());
     }
@@ -35,6 +37,14 @@ public abstract class AbstractLogger implements Logger {
     public AbstractLogger addPipeline(Pipeline pipeline) {
         pipelines.add(pipeline);
         return this;
+    }
+
+    public void disable() {
+        disabled = true;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
     }
 
     @Override
@@ -90,7 +100,7 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void log(Level level, LazyMessage lazyMessage) {
-        doLog(new LogEntry(level, null, lazyMessage));
+        _doLog(new LogEntry(level, null, lazyMessage));
     }
 
     @Override
@@ -146,13 +156,18 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void log(Level level, Object message) {
-        doLog(new LogEntry(level, message, null));
+        _doLog(new LogEntry(level, message, null));
     }
 
     static String throwableToString(Throwable t) {
         Writer writer = new StringWriter();
         t.printStackTrace(new PrintWriter(writer));
         return writer.toString();
+    }
+
+    private void _doLog(LogEntry entry) {
+        if (disabled) return;
+        doLog(entry);
     }
 
     protected abstract void doLog(LogEntry entry);

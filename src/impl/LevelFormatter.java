@@ -1,12 +1,10 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.EvaluationException;
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.api.Formatter;
 
-public final class LevelFormatter implements Formatter {
+public class LevelFormatter extends MessageFormatter {
     @Override
-    public String format(LogEntry entry) throws EvaluationException {
-        return '[' + entry.getLevel().getMarker() + "] " + entry.getMessage();
+    public String format(LogEntry entry) throws Exception {
+        return '[' + entry.getLevel().getMarker() + "] " + super.format(entry);
     }
 }

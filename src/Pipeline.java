@@ -15,7 +15,7 @@ import java.util.Set;
 
 public final class Pipeline {
     private final Set<Filter> filters = new HashSet<>();
-    private Formatter formatter = new IdentityFormatter();
+    private Formatter formatter = new MessageFormatter();
     private final Set<Consumer> consumers = new HashSet<>();
 
     public Set<Filter> getFilters() {

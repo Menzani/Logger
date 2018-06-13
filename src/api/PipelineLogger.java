@@ -9,7 +9,7 @@ import java.util.Set;
 public abstract class PipelineLogger extends ToggleableLogger {
     private final Set<Pipeline> pipelines = new HashSet<>();
 
-    protected Set<Pipeline> getPipelines() {
+    public Set<Pipeline> getPipelines() {
         return Collections.unmodifiableSet(pipelines);
     }
 

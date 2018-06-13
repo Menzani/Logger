@@ -16,4 +16,9 @@ public final class SynchronousLogger extends PipelineLogger {
             pipeline.getConsumers().forEach(newConsumerFunction(formattedEntry, entry.getLevel()));
         }
     }
+
+    @Override
+    protected SynchronousLogger newInstance() {
+        return new SynchronousLogger();
+    }
 }

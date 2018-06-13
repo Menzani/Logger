@@ -20,6 +20,11 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
+    @Override
+    protected AsynchronousLogger newInstance() {
+        return new AsynchronousLogger();
+    }
+
     private final class Consumer implements Runnable {
         @Override
         public void run() {

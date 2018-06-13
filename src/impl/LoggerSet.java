@@ -1,10 +1,7 @@
 package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.api.LazyMessage;
-import it.menzani.logger.api.Level;
-import it.menzani.logger.api.Logger;
-import it.menzani.logger.api.ToggleableLogger;
+import it.menzani.logger.api.*;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -105,6 +102,15 @@ public final class LoggerSet extends ToggleableLogger implements Set<Logger> {
         for (Logger logger : this) {
             logger.log(level, message);
         }
+    }
+
+    @Override
+    public LoggerSet clone() {
+        LoggerSet clone = new LoggerSet();
+        for (Logger logger : this) {
+            clone.add(logger.clone());
+        }
+        return clone;
     }
 
     @Override

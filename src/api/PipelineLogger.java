@@ -23,4 +23,15 @@ public abstract class PipelineLogger extends ToggleableLogger {
         pipelines.add(pipeline);
         return this;
     }
+
+    @Override
+    public PipelineLogger clone() {
+        PipelineLogger clone = newInstance();
+        for (Pipeline pipeline : pipelines) {
+            clone.addPipeline(pipeline.clone());
+        }
+        return clone;
+    }
+
+    protected abstract PipelineLogger newInstance();
 }

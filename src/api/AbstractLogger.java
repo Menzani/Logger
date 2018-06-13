@@ -124,6 +124,9 @@ public abstract class AbstractLogger implements Logger {
         tryLog(new LogEntry(level, message, null));
     }
 
+    @Override
+    public abstract AbstractLogger clone();
+
     static String throwableToString(Throwable t) {
         Writer writer = new StringWriter();
         t.printStackTrace(new PrintWriter(writer));

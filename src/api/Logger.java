@@ -1,6 +1,6 @@
 package it.menzani.logger.api;
 
-public interface Logger {
+public interface Logger extends Cloneable<Logger> {
     void trace(LazyMessage lazyMessage);
 
     void debug(LazyMessage lazyMessage);

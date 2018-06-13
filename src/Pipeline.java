@@ -1,5 +1,6 @@
 package it.menzani.logger;
 
+import it.menzani.logger.api.Cloneable;
 import it.menzani.logger.api.*;
 import it.menzani.logger.impl.LevelFilter;
 import it.menzani.logger.impl.MessageFormatter;
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class Pipeline implements Toggleable {
+public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
     private final Set<Filter> filters = new HashSet<>();
     private Formatter formatter = new MessageFormatter();
     private final Set<Consumer> consumers = new HashSet<>();
@@ -67,5 +68,18 @@ public final class Pipeline implements Toggleable {
     @Override
     public void disable() {
         addFilter(new RejectAllFilter());
+    }
+
+    @Override
+    public Pipeline clone() {
+        Pipeline clone = new Pipeline();
+        for (Filter filter : filters) {
+            clone.addFilter(filter);
+        }
+        clone.setFormatter(formatter);
+        for (Consumer consumer : consumers) {
+            clone.addConsumer(consumer);
+        }
+        return clone;
     }
 }

@@ -30,9 +30,9 @@ public abstract class PipelineLogger extends ToggleableLogger {
     @Override
     public PipelineLogger clone() {
         PipelineLogger clone = newInstance().orElseThrow(() -> new CloneException(this));
-        for (Pipeline pipeline : pipelines) {
-            clone.addPipeline(pipeline.clone());
-        }
+        pipelines.stream()
+                .map(Cloneable::clone)
+                .forEach(clone::addPipeline);
         return clone;
     }
 

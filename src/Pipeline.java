@@ -73,13 +73,9 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
     @Override
     public Pipeline clone() {
         Pipeline clone = new Pipeline();
-        for (Filter filter : filters) {
-            clone.addFilter(filter);
-        }
+        filters.forEach(clone::addFilter);
         clone.setFormatter(formatter);
-        for (Consumer consumer : consumers) {
-            clone.addConsumer(consumer);
-        }
+        consumers.forEach(clone::addConsumer);
         return clone;
     }
 }

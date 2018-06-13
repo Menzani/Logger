@@ -1,10 +1,8 @@
 package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.api.LazyMessage;
-import it.menzani.logger.api.Level;
-import it.menzani.logger.api.Logger;
-import it.menzani.logger.api.ToggleableLogger;
+import it.menzani.logger.api.Cloneable;
+import it.menzani.logger.api.*;
 
 import java.util.*;
 
@@ -157,9 +155,9 @@ public final class LoggerGroup extends ToggleableLogger implements List<Logger> 
     @Override
     public LoggerGroup clone() {
         LoggerGroup clone = new LoggerGroup();
-        for (Logger logger : this) {
-            clone.add(logger.clone());
-        }
+        this.stream()
+                .map(Cloneable::clone)
+                .forEach(clone::add);
         return clone;
     }
 

@@ -172,4 +172,33 @@ public abstract class AbstractLogger implements Logger {
         System.err.println(API_MESSAGE_PREFIX + "Could not pass log entry to " +
                 apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
+
+    enum ReservedLevel implements Level {
+        LOGGER(-1, "LOGGER", false);
+
+        private final int verbosity;
+        private final String marker;
+        private final boolean error;
+
+        ReservedLevel(int verbosity, String marker, boolean error) {
+            this.verbosity = verbosity;
+            this.marker = marker;
+            this.error = error;
+        }
+
+        @Override
+        public int getVerbosity() {
+            return verbosity;
+        }
+
+        @Override
+        public String getMarker() {
+            return marker;
+        }
+
+        @Override
+        public boolean isError() {
+            return error;
+        }
+    }
 }

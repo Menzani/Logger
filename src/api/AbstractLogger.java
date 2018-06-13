@@ -10,7 +10,7 @@ import java.io.Writer;
 import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
-    private static final String API_MESSAGE_PREFIX = "[Logger] ";
+    private static final String LOGGER_ERROR_PREFIX = "[Logger] ";
 
     @Override
     public void trace(LazyMessage lazyMessage) {
@@ -135,12 +135,16 @@ public abstract class AbstractLogger implements Logger {
 
     protected abstract void tryLog(LogEntry entry);
 
+    protected static void printLoggerError(String message) {
+        System.err.println(LOGGER_ERROR_PREFIX + message);
+    }
+
     protected static Predicate<Filter> newFilterFunction(LogEntry entry) {
         return filter -> {
             try {
                 return filter.reject(entry);
             } catch (Exception e) {
-                printLoggerError(Filter.class, filter);
+                printPipelineError(Filter.class, filter);
                 e.printStackTrace();
                 return true;
             }
@@ -154,7 +158,7 @@ public abstract class AbstractLogger implements Logger {
             String levelMarker = entry.getLevel().getMarker();
             throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + levelMarker);
         } catch (Exception e) {
-            printLoggerError(Formatter.class, formatter);
+            printPipelineError(Formatter.class, formatter);
             e.printStackTrace();
         }
         return null;
@@ -165,15 +169,15 @@ public abstract class AbstractLogger implements Logger {
             try {
                 consumer.consume(entry, level);
             } catch (Exception e) {
-                printLoggerError(Consumer.class, consumer);
+                printPipelineError(Consumer.class, consumer);
                 e.printStackTrace();
             }
         };
     }
 
-    private static void printLoggerError(Class<?> apiClass, Object implObject) {
-        System.err.println(API_MESSAGE_PREFIX + "Could not pass log entry to " +
-                apiClass.getSimpleName() + ": " + implObject.getClass().getName());
+    private static void printPipelineError(Class<?> apiClass, Object implObject) {
+        assert apiClass == Filter.class || apiClass == Formatter.class || apiClass == Consumer.class;
+        printLoggerError("Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
 
     enum ReservedLevel implements Level {

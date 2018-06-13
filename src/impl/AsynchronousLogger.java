@@ -7,10 +7,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public final class AsynchronousLogger extends PipelineLogger {
+    private static final String THREAD_NAME = AsynchronousLogger.class.getSimpleName() + " daemon";
+
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
     {
-        Thread thread = new Thread(new Consumer(), getClass().getSimpleName() + " daemon");
+        Thread thread = new Thread(new Consumer(), THREAD_NAME);
         thread.setDaemon(true);
         thread.start();
     }
@@ -25,6 +27,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         public void run() {
             while (true) {
                 LogEntry entry = consumeOne();
+                if (entry == null) return;
                 getPipelines().parallelStream().forEach(pipeline -> {
                     boolean rejected = pipeline.getFilters().parallelStream()
                             .anyMatch(newFilterFunction(entry));
@@ -41,7 +44,9 @@ public final class AsynchronousLogger extends PipelineLogger {
             try {
                 return queue.take();
             } catch (InterruptedException e) {
-                throw new AssertionError(e);
+                printLoggerError(THREAD_NAME + " thread was interrupted.");
+                e.printStackTrace();
+                return null;
             }
         }
     }

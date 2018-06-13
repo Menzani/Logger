@@ -2,15 +2,15 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.Pipeline;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public abstract class PipelineLogger extends ToggleableLogger {
-    private final Set<Pipeline> pipelines = new HashSet<>();
+    private final List<Pipeline> pipelines = new ArrayList<>();
 
-    public Set<Pipeline> getPipelines() {
-        return Collections.unmodifiableSet(pipelines);
+    public List<Pipeline> getPipelines() {
+        return Collections.unmodifiableList(pipelines);
     }
 
     public PipelineLogger setPipelines(Pipeline... pipelines) {

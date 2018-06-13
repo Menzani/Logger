@@ -3,6 +3,7 @@ package it.menzani.logger.api;
 import it.menzani.logger.Pipeline;
 import it.menzani.logger.impl.BufferConsumer;
 import it.menzani.logger.impl.StandardLevel;
+import it.menzani.logger.impl.TimestampFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -18,7 +19,9 @@ public abstract class AbstractLoggerTest {
     @BeforeEach
     void init() {
         consumer = new BufferConsumer();
-        logger = newLogger().setPipelines(Pipeline.newConsoleLocalPipeline().setConsumers(consumer));
+        logger = newLogger().addPipeline(new Pipeline()
+                .setFormatter(new TimestampFormatter())
+                .addConsumer(consumer));
     }
 
     protected abstract PipelineLogger newLogger();

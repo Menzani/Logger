@@ -9,10 +9,6 @@ import java.util.Set;
 public abstract class PipelineLogger extends ToggleableLogger {
     private final Set<Pipeline> pipelines = new HashSet<>();
 
-    {
-        addPipeline(Pipeline.newConsoleLocalPipeline());
-    }
-
     protected Set<Pipeline> getPipelines() {
         return pipelines;
     }

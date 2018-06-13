@@ -4,11 +4,11 @@ import it.menzani.logger.api.Consumer;
 import it.menzani.logger.api.Filter;
 import it.menzani.logger.api.Formatter;
 import it.menzani.logger.api.Level;
-import it.menzani.logger.impl.*;
+import it.menzani.logger.impl.LevelFilter;
+import it.menzani.logger.impl.MessageFormatter;
+import it.menzani.logger.impl.RejectAllFilter;
+import it.menzani.logger.impl.StandardLevel;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -70,12 +70,5 @@ public final class Pipeline {
     public Pipeline disable() {
         addFilter(new RejectAllFilter());
         return this;
-    }
-
-    public static Pipeline newConsoleLocalPipeline() {
-        Pipeline pipeline = new Pipeline();
-        pipeline.setFormatter(new TimestampFormatter(LocalDateTime::now, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)));
-        pipeline.addConsumer(new ConsoleConsumer());
-        return pipeline;
     }
 }

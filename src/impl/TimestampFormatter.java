@@ -7,15 +7,21 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
 
-public class TimestampFormatter extends LevelFormatter {
+public final class TimestampFormatter extends LevelFormatter {
+    private final LevelFormatter levelFormatter;
     private final Clock clock;
     private final DateTimeFormatter formatter;
 
     public TimestampFormatter() {
-        this(LocalDateTime::now, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+        this(new LevelFormatter());
     }
 
-    public TimestampFormatter(Clock clock, DateTimeFormatter formatter) {
+    public TimestampFormatter(LevelFormatter levelFormatter) {
+        this(levelFormatter, LocalDateTime::now, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+    }
+
+    public TimestampFormatter(LevelFormatter levelFormatter, Clock clock, DateTimeFormatter formatter) {
+        this.levelFormatter = levelFormatter;
         this.clock = clock;
         this.formatter = formatter;
     }
@@ -23,7 +29,7 @@ public class TimestampFormatter extends LevelFormatter {
     @Override
     public String format(LogEntry entry) throws Exception {
         String now = formatter.format(clock.now());
-        return new StringBuilder(super.format(entry))
+        return new StringBuilder(levelFormatter.format(entry))
                 .insert(1, ' ')
                 .insert(1, now)
                 .toString();

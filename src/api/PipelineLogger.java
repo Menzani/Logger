@@ -10,7 +10,7 @@ public abstract class PipelineLogger extends ToggleableLogger {
     private final Set<Pipeline> pipelines = new HashSet<>();
 
     protected Set<Pipeline> getPipelines() {
-        return pipelines;
+        return Collections.unmodifiableSet(pipelines);
     }
 
     public PipelineLogger setPipelines(Pipeline... pipelines) {

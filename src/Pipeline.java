@@ -16,7 +16,7 @@ public final class Pipeline implements Toggleable {
     private final Set<Consumer> consumers = new HashSet<>();
 
     public Set<Filter> getFilters() {
-        return filters;
+        return Collections.unmodifiableSet(filters);
     }
 
     public Formatter getFormatter() {
@@ -24,7 +24,7 @@ public final class Pipeline implements Toggleable {
     }
 
     public Set<Consumer> getConsumers() {
-        return consumers;
+        return Collections.unmodifiableSet(consumers);
     }
 
     public Pipeline setFilters(Filter... filters) {

@@ -1,15 +1,15 @@
 package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
-import it.menzani.logger.api.*;
+import it.menzani.logger.api.LazyMessage;
+import it.menzani.logger.api.Level;
+import it.menzani.logger.api.Logger;
+import it.menzani.logger.api.ToggleableLogger;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
-public final class LoggerSet extends ToggleableLogger implements Set<Logger> {
-    private final Set<Logger> delegate = new HashSet<>();
+public final class LoggerGroup extends ToggleableLogger implements List<Logger> {
+    private final List<Logger> delegate = new ArrayList<>();
 
     //<editor-fold desc="Delegated methods">
     @Override
@@ -63,13 +63,18 @@ public final class LoggerSet extends ToggleableLogger implements Set<Logger> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
-        return delegate.retainAll(c);
+    public boolean addAll(int index, Collection<? extends Logger> c) {
+        return delegate.addAll(index, c);
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         return delegate.removeAll(c);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return delegate.retainAll(c);
     }
 
     @Override
@@ -85,6 +90,51 @@ public final class LoggerSet extends ToggleableLogger implements Set<Logger> {
     @Override
     public int hashCode() {
         return delegate.hashCode();
+    }
+
+    @Override
+    public Logger get(int index) {
+        return delegate.get(index);
+    }
+
+    @Override
+    public Logger set(int index, Logger element) {
+        return delegate.set(index, element);
+    }
+
+    @Override
+    public void add(int index, Logger element) {
+        delegate.add(index, element);
+    }
+
+    @Override
+    public Logger remove(int index) {
+        return delegate.remove(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return delegate.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return delegate.lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<Logger> listIterator() {
+        return delegate.listIterator();
+    }
+
+    @Override
+    public ListIterator<Logger> listIterator(int index) {
+        return delegate.listIterator(index);
+    }
+
+    @Override
+    public List<Logger> subList(int fromIndex, int toIndex) {
+        return delegate.subList(fromIndex, toIndex);
     }
     //</editor-fold>
 
@@ -105,8 +155,8 @@ public final class LoggerSet extends ToggleableLogger implements Set<Logger> {
     }
 
     @Override
-    public LoggerSet clone() {
-        LoggerSet clone = new LoggerSet();
+    public LoggerGroup clone() {
+        LoggerGroup clone = new LoggerGroup();
         for (Logger logger : this) {
             clone.add(logger.clone());
         }

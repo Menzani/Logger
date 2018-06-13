@@ -2,9 +2,10 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.LogEntry;
 
-public abstract class ToggleableLogger extends AbstractLogger {
+public abstract class ToggleableLogger extends AbstractLogger implements Toggleable {
     private boolean disabled;
 
+    @Override
     public void disable() {
         disabled = true;
     }

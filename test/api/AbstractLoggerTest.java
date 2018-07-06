@@ -19,12 +19,12 @@ public abstract class AbstractLoggerTest {
     @BeforeEach
     void init() {
         consumer = new BufferConsumer();
-        logger = newLogger().addPipeline(new Pipeline()
+        logger = newLogger(new Pipeline()
                 .setFormatter(new TimestampFormatter())
                 .addConsumer(consumer));
     }
 
-    protected abstract PipelineLogger newLogger();
+    protected abstract PipelineLogger newLogger(Pipeline pipeline);
 
     @ParameterizedTest
     @EnumSource(StandardLevel.class)

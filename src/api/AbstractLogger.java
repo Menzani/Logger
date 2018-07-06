@@ -7,7 +7,6 @@ import it.menzani.logger.impl.StandardLevel;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.function.Predicate;
 
 public abstract class AbstractLogger implements Logger {
     private static final String LOGGER_ERROR_PREFIX = "[Logger] ";
@@ -139,16 +138,14 @@ public abstract class AbstractLogger implements Logger {
         System.err.println(LOGGER_ERROR_PREFIX + message);
     }
 
-    protected static Predicate<Filter> newFilterFunction(LogEntry entry) {
-        return filter -> {
-            try {
-                return filter.reject(entry);
-            } catch (Exception e) {
-                printPipelineError(Filter.class, filter);
-                e.printStackTrace();
-                return true;
-            }
-        };
+    protected static boolean doFilter(Filter filter, LogEntry entry) {
+        try {
+            return filter.reject(entry);
+        } catch (Exception e) {
+            printPipelineError(Filter.class, filter);
+            e.printStackTrace();
+            return true;
+        }
     }
 
     protected String doFormat(Formatter formatter, LogEntry entry) {
@@ -164,15 +161,13 @@ public abstract class AbstractLogger implements Logger {
         return null;
     }
 
-    protected static java.util.function.Consumer<Consumer> newConsumerFunction(String entry, Level level) {
-        return consumer -> {
-            try {
-                consumer.consume(entry, level);
-            } catch (Exception e) {
-                printPipelineError(Consumer.class, consumer);
-                e.printStackTrace();
-            }
-        };
+    protected static void doConsume(Consumer consumer, String entry, Level level) {
+        try {
+            consumer.consume(entry, level);
+        } catch (Exception e) {
+            printPipelineError(Consumer.class, consumer);
+            e.printStackTrace();
+        }
     }
 
     private static void printPipelineError(Class<?> apiClass, Object implObject) {

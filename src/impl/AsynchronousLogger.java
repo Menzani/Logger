@@ -6,6 +6,7 @@ import it.menzani.logger.api.Filter;
 import it.menzani.logger.api.PipelineLogger;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.stream.Stream;
@@ -148,10 +149,10 @@ public final class AsynchronousLogger extends PipelineLogger {
                 }
             }
 
-            String formattedEntry = doFormat(pipeline.getFormatter(), entry);
-            if (formattedEntry == null) return;
+            Optional<String> formattedEntry = doFormat(pipeline.getFormatter(), entry);
+            if (!formattedEntry.isPresent()) return;
             pipeline.getConsumers().stream()
-                    .map(consumer -> (Runnable) () -> doConsume(consumer, formattedEntry, entry.getLevel()))
+                    .map(consumer -> (Runnable) () -> doConsume(consumer, formattedEntry.get(), entry.getLevel()))
                     .forEach(executor::execute);
         }
     }

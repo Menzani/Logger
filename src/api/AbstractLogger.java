@@ -7,6 +7,7 @@ import it.menzani.logger.impl.StandardLevel;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Optional;
 
 public abstract class AbstractLogger implements Logger {
     private static final String LOGGER_ERROR_PREFIX = "[Logger] ";
@@ -148,9 +149,9 @@ public abstract class AbstractLogger implements Logger {
         }
     }
 
-    protected String doFormat(Formatter formatter, LogEntry entry) {
+    protected Optional<String> doFormat(Formatter formatter, LogEntry entry) {
         try {
-            return formatter.format(entry);
+            return Optional.ofNullable(formatter.format(entry));
         } catch (EvaluationException e) {
             String levelMarker = entry.getLevel().getMarker();
             throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + levelMarker);
@@ -158,7 +159,7 @@ public abstract class AbstractLogger implements Logger {
             printPipelineError(Formatter.class, formatter);
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     protected static void doConsume(Consumer consumer, String entry, Level level) {

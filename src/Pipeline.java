@@ -8,6 +8,7 @@ import it.menzani.logger.impl.RejectAllFilter;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -63,6 +64,14 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
     public Pipeline withDefaultVerbosity() {
         withVerbosity(StandardLevel.INFORMATION);
         return this;
+    }
+
+    public Optional<Level> getVerbosity() {
+        return filters.stream()
+                .filter(LevelFilter.class::isInstance)
+                .map(LevelFilter.class::cast)
+                .map(LevelFilter::getLevel)
+                .min(new Level.Comparator());
     }
 
     @Override

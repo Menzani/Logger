@@ -81,11 +81,6 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
-    private static void logInterruption(InterruptedException e) {
-        printLoggerError(THREAD_NAME + " thread was interrupted.");
-        e.printStackTrace();
-    }
-
     private final class ThreadManager implements ThreadFactory, Runnable {
         private final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
 
@@ -117,14 +112,19 @@ public final class AsynchronousLogger extends PipelineLogger {
                     }
                 }
             } catch (InterruptedException e) {
-                logInterruption(e);
+                printLoggerError(THREAD_NAME + " thread was interrupted.");
+                e.printStackTrace();
             } catch (ExecutionException e) {
-                e.getCause().printStackTrace();
+                Throwable cause = e.getCause();
+                if (cause instanceof ExecutionException) {
+                    cause = cause.getCause();
+                }
+                cause.printStackTrace();
             }
         }
     }
 
-    private final class PipelineConsumer implements Runnable {
+    private final class PipelineConsumer implements Callable<Void> {
         private final Pipeline pipeline;
         private final LogEntry entry;
 
@@ -134,7 +134,12 @@ public final class AsynchronousLogger extends PipelineLogger {
         }
 
         @Override
-        public void run() {
+        public Void call() throws InterruptedException, ExecutionException {
+            run();
+            return null;
+        }
+
+        private void run() throws InterruptedException, ExecutionException {
             Set<Filter> filters = pipeline.getFilters();
             CompletionService<Boolean> completion = new ExecutorCompletionService<>(executor);
             Future<?>[] futures = new Future<?>[filters.size()];
@@ -149,12 +154,6 @@ public final class AsynchronousLogger extends PipelineLogger {
                     boolean rejected = completion.take().get();
                     if (rejected) return;
                 }
-            } catch (InterruptedException e) {
-                logInterruption(e);
-                return;
-            } catch (ExecutionException e) {
-                e.getCause().printStackTrace();
-                return;
             } finally {
                 for (Future<?> future : futures) {
                     future.cancel(true);

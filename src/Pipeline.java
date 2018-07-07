@@ -8,13 +8,13 @@ import it.menzani.logger.impl.RejectAllFilter;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
-    private final Set<Filter> filters = new HashSet<>();
-    private Formatter formatter = new MessageFormatter();
-    private final Set<Consumer> consumers = new HashSet<>();
+    private final Set<Filter> filters = new CopyOnWriteArraySet<>();
+    private volatile Formatter formatter = new MessageFormatter();
+    private final Set<Consumer> consumers = new CopyOnWriteArraySet<>();
 
     public Set<Filter> getFilters() {
         return Collections.unmodifiableSet(filters);

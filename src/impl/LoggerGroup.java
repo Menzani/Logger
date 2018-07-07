@@ -4,12 +4,12 @@ import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.Cloneable;
 import it.menzani.logger.api.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class LoggerGroup extends ToggleableLogger {
-    private final List<Logger> loggers = new ArrayList<>();
+    private final List<Logger> loggers = new CopyOnWriteArrayList<>();
 
     public List<Logger> getLoggers() {
         return Collections.unmodifiableList(loggers);

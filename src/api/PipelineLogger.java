@@ -4,13 +4,13 @@ import it.menzani.logger.CloneException;
 import it.menzani.logger.Pipeline;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class PipelineLogger extends ToggleableLogger {
-    private final List<Pipeline> pipelines = new ArrayList<>();
+    private final List<Pipeline> pipelines = new CopyOnWriteArrayList<>();
 
     public List<Pipeline> getPipelines() {
         return Collections.unmodifiableList(pipelines);

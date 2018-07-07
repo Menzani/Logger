@@ -3,7 +3,7 @@ package it.menzani.logger.api;
 import it.menzani.logger.LogEntry;
 
 public abstract class ToggleableLogger extends AbstractLogger implements Toggleable {
-    private boolean disabled;
+    private volatile boolean disabled;
 
     @Override
     public void disable() {

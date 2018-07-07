@@ -7,6 +7,7 @@ import it.menzani.logger.api.PipelineLogger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -43,14 +44,14 @@ public final class AsynchronousLogger extends PipelineLogger {
 
     private int defaultParallelism() {
         List<Pipeline> pipelines = getPipelines();
-        int elementCount = Stream.concat(
+        OptionalInt maxElements = Stream.concat(
                 pipelines.stream()
                         .map(Pipeline::getFilters),
                 pipelines.stream()
                         .map(Pipeline::getConsumers))
                 .mapToInt(Set::size)
-                .sum();
-        return 1 + pipelines.size() + elementCount;
+                .max();
+        return 1 + pipelines.size() + maxElements.orElse(0);
     }
 
     @Override
@@ -80,7 +81,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
-    private static void printThreadingError() {
+    private static void printThreadInterruptedError() {
         printLoggerError(Thread.currentThread().getName() + " thread was interrupted.");
     }
 
@@ -110,7 +111,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                     }
                 }
             } catch (InterruptedException e) {
-                printThreadingError();
+                printThreadInterruptedError();
                 e.printStackTrace();
             } finally {
                 executor.shutdown();
@@ -128,11 +129,11 @@ public final class AsynchronousLogger extends PipelineLogger {
                             .map(pipeline -> new PipelineConsumer(pipeline, entry))
                             .map(executor::submit));
                     synchronized (queueMonitor) {
-                        queueMonitor.notify();
+                        queueMonitor.notifyAll();
                     }
                 }
             } catch (InterruptedException e) {
-                printThreadingError();
+                printThreadInterruptedError();
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();

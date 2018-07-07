@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class AsynchronousLogger extends PipelineLogger {
@@ -107,12 +108,18 @@ public final class AsynchronousLogger extends PipelineLogger {
             try {
                 while (true) {
                     LogEntry entry = queue.take();
-                    getPipelines().stream()
+                    Set<Future<?>> futures = getPipelines().stream()
                             .map(pipeline -> new PipelineConsumer(pipeline, entry))
-                            .forEach(executor::execute);
+                            .map(executor::submit)
+                            .collect(Collectors.toSet());
+                    for (Future<?> future : futures) {
+                        future.get();
+                    }
                 }
             } catch (InterruptedException e) {
                 logInterruption(e);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
         }
     }

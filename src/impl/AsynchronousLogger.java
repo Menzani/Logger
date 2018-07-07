@@ -13,11 +13,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class AsynchronousLogger extends PipelineLogger {
-    private static final String THREAD_NAME = AsynchronousLogger.class.getSimpleName() + " daemon";
-
     private volatile int parallelism;
     private volatile ExecutorService executor;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
+    private final Object queueMonitor = new Object();
 
     public int getParallelism() {
         return parallelism;
@@ -28,7 +27,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         ThreadManager threadManager = new ThreadManager();
         if (executor == null) {
             Runtime.getRuntime()
-                    .addShutdownHook(new Thread(threadManager));
+                    .addShutdownHook(new Thread(threadManager, "AsynchronousLogger shutdown"));
         } else {
             executor.shutdown();
         }
@@ -81,19 +80,41 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
+    private static void printThreadingError() {
+        printLoggerError(Thread.currentThread().getName() + " thread was interrupted.");
+    }
+
+    private static void joinAll(Stream<Future<?>> futures) throws InterruptedException, ExecutionException {
+        for (Future<?> future : futures.collect(Collectors.toSet())) {
+            future.get();
+        }
+    }
+
     private final class ThreadManager implements ThreadFactory, Runnable {
         private final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
 
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = defaultFactory.newThread(r);
-            thread.setName(THREAD_NAME);
+            thread.setName("AsynchronousLogger daemon");
+            thread.setDaemon(true);
             return thread;
         }
 
         @Override
         public void run() {
-            executor.shutdown();
+            try {
+                synchronized (queueMonitor) {
+                    while (!queue.isEmpty()) {
+                        queueMonitor.wait();
+                    }
+                }
+            } catch (InterruptedException e) {
+                printThreadingError();
+                e.printStackTrace();
+            } finally {
+                executor.shutdown();
+            }
         }
     }
 
@@ -103,16 +124,15 @@ public final class AsynchronousLogger extends PipelineLogger {
             try {
                 while (true) {
                     LogEntry entry = queue.take();
-                    Set<Future<?>> futures = getPipelines().stream()
+                    joinAll(getPipelines().stream()
                             .map(pipeline -> new PipelineConsumer(pipeline, entry))
-                            .map(executor::submit)
-                            .collect(Collectors.toSet());
-                    for (Future<?> future : futures) {
-                        future.get();
+                            .map(executor::submit));
+                    synchronized (queueMonitor) {
+                        queueMonitor.notify();
                     }
                 }
             } catch (InterruptedException e) {
-                printLoggerError(THREAD_NAME + " thread was interrupted.");
+                printThreadingError();
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
@@ -162,9 +182,9 @@ public final class AsynchronousLogger extends PipelineLogger {
 
             Optional<String> formattedEntry = doFormat(pipeline.getFormatter(), entry);
             if (!formattedEntry.isPresent()) return;
-            pipeline.getConsumers().stream()
+            joinAll(pipeline.getConsumers().stream()
                     .map(consumer -> (Runnable) () -> doConsume(consumer, formattedEntry.get(), entry.getLevel()))
-                    .forEach(executor::execute);
+                    .map(executor::submit));
         }
     }
 }

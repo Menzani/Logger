@@ -10,8 +10,6 @@ import java.io.Writer;
 import java.util.Optional;
 
 public abstract class AbstractLogger implements Logger {
-    private static final String LOGGER_ERROR_PREFIX = "[Logger] ";
-
     @Override
     public void trace(LazyMessage lazyMessage) {
         log(StandardLevel.TRACE, lazyMessage);
@@ -136,7 +134,7 @@ public abstract class AbstractLogger implements Logger {
     protected abstract void tryLog(LogEntry entry);
 
     protected static void printLoggerError(String message) {
-        System.err.println(LOGGER_ERROR_PREFIX + message);
+        System.err.println("[Logger] " + message);
     }
 
     protected static boolean doFilter(Filter filter, LogEntry entry) {

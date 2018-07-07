@@ -10,6 +10,7 @@ public abstract class ToggleableLogger extends AbstractLogger implements Togglea
         disabled = true;
     }
 
+    @Override
     public boolean isDisabled() {
         return disabled;
     }

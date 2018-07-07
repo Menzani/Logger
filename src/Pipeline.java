@@ -71,6 +71,12 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
     }
 
     @Override
+    public boolean isDisabled() {
+        return filters.stream()
+                .anyMatch(RejectAllFilter.class::isInstance);
+    }
+
+    @Override
     public Pipeline clone() {
         Pipeline clone = new Pipeline();
         filters.forEach(clone::addFilter);

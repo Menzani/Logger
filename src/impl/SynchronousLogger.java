@@ -22,9 +22,9 @@ public final class SynchronousLogger extends PipelineLogger {
         for (Pipeline pipeline : getPipelines()) {
             boolean rejected = pipeline.getFilters().stream()
                     .anyMatch(filter -> doFilter(filter, entry));
-            if (rejected) return;
+            if (rejected) continue;
             Optional<String> formattedEntry = doFormat(pipeline.getFormatter(), entry);
-            if (!formattedEntry.isPresent()) return;
+            if (!formattedEntry.isPresent()) continue;
             pipeline.getConsumers()
                     .forEach(consumer -> doConsume(consumer, formattedEntry.get(), entry.getLevel()));
         }

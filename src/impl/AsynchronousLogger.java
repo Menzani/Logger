@@ -119,7 +119,7 @@ public final class AsynchronousLogger extends PipelineLogger {
             } catch (InterruptedException e) {
                 logInterruption(e);
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                e.getCause().printStackTrace();
             }
         }
     }
@@ -153,7 +153,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                 logInterruption(e);
                 return;
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                e.getCause().printStackTrace();
                 return;
             } finally {
                 for (Future<?> future : futures) {

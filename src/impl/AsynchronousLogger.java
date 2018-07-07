@@ -71,6 +71,11 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     @Override
+    protected AsynchronousLogger newInstance() {
+        return new AsynchronousLogger();
+    }
+
+    @Override
     protected void doLog(LogEntry entry) {
         queue.add(entry);
     }

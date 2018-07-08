@@ -108,7 +108,7 @@ public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
 
     @Override
     public Pipeline clone() {
-        Pipeline clone = new Pipeline();
+        Pipeline clone = new Pipeline(getName().orElse(null));
         filters.forEach(clone::addFilter);
         clone.setFormatter(formatter);
         consumers.forEach(clone::addConsumer);

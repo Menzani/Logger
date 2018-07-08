@@ -78,7 +78,7 @@ public final class AsynchronousLogger extends PipelineLogger {
 
     @Override
     protected AsynchronousLogger newInstance() {
-        return new AsynchronousLogger();
+        return new AsynchronousLogger(getName().orElse(null));
     }
 
     @Override

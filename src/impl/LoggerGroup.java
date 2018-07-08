@@ -61,7 +61,7 @@ public final class LoggerGroup extends ToggleableNamedLogger {
 
     @Override
     public LoggerGroup clone() {
-        LoggerGroup clone = new LoggerGroup();
+        LoggerGroup clone = new LoggerGroup(getName().orElse(null));
         loggers.stream()
                 .map(Cloneable::clone)
                 .forEach(clone::addLogger);

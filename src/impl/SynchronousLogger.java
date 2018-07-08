@@ -22,7 +22,7 @@ public final class SynchronousLogger extends PipelineLogger {
 
     @Override
     protected SynchronousLogger newInstance() {
-        return new SynchronousLogger();
+        return new SynchronousLogger(getName().orElse(null));
     }
 
     @Override

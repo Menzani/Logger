@@ -8,8 +8,16 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class LoggerGroup extends ToggleableLogger {
+public final class LoggerGroup extends ToggleableNamedLogger {
     private final Set<Logger> loggers = new CopyOnWriteArraySet<>();
+
+    public LoggerGroup() {
+        super();
+    }
+
+    public LoggerGroup(String name) {
+        super(name);
+    }
 
     public Set<Logger> getLoggers() {
         return Collections.unmodifiableSet(loggers);

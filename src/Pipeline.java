@@ -12,10 +12,24 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
+public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
+    private final String name;
     private final Set<Filter> filters = new CopyOnWriteArraySet<>();
     private volatile Formatter formatter = new MessageFormatter();
     private final Set<Consumer> consumers = new CopyOnWriteArraySet<>();
+
+    public Pipeline() {
+        this(null);
+    }
+
+    public Pipeline(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public Optional<String> getName() {
+        return Optional.ofNullable(name);
+    }
 
     public Set<Filter> getFilters() {
         return Collections.unmodifiableSet(filters);
@@ -103,6 +117,6 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
 
     @Override
     public String toString() {
-        return "{" + filters.size() + " -> " + consumers.size() + "}";
+        return getName().orElse("") + "{" + filters.size() + " -> " + consumers.size() + "}";
     }
 }

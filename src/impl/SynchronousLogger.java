@@ -7,6 +7,14 @@ import it.menzani.logger.api.PipelineLogger;
 import java.util.Optional;
 
 public final class SynchronousLogger extends PipelineLogger {
+    public SynchronousLogger() {
+        super();
+    }
+
+    public SynchronousLogger(String name) {
+        super(name);
+    }
+
     @Override
     public SynchronousLogger clone() {
         return (SynchronousLogger) super.clone();

@@ -17,6 +17,14 @@ public final class AsynchronousLogger extends PipelineLogger {
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
     private final Object queueMonitor = new Object();
 
+    public AsynchronousLogger() {
+        super();
+    }
+
+    public AsynchronousLogger(String name) {
+        super(name);
+    }
+
     int getParallelism() {
         return ((ThreadPoolExecutor) executor).getCorePoolSize();
     }

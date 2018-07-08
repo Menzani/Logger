@@ -6,8 +6,16 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public abstract class PipelineLogger extends ToggleableLogger {
+public abstract class PipelineLogger extends ToggleableNamedLogger {
     private final Set<Pipeline> pipelines = new CopyOnWriteArraySet<>();
+
+    protected PipelineLogger() {
+        super();
+    }
+
+    protected PipelineLogger(String name) {
+        super(name);
+    }
 
     protected Set<Pipeline> getPipelines() {
         return Collections.unmodifiableSet(pipelines);

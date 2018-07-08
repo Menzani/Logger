@@ -2,8 +2,24 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.LogEntry;
 
-public abstract class ToggleableLogger extends AbstractLogger implements Toggleable {
+import java.util.Optional;
+
+public abstract class ToggleableNamedLogger extends AbstractLogger {
+    private final String name;
     private volatile boolean disabled;
+
+    protected ToggleableNamedLogger() {
+        this(null);
+    }
+
+    protected ToggleableNamedLogger(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public Optional<String> getName() {
+        return Optional.ofNullable(name);
+    }
 
     @Override
     public void disable() {

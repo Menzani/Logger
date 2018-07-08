@@ -1,5 +1,7 @@
 package it.menzani.logger.api;
 
+import it.menzani.logger.LogEntry;
+
 public interface Consumer {
-    void consume(String entry, Level level) throws Exception;
+    void consume(LogEntry entry, String formattedEntry) throws Exception;
 }

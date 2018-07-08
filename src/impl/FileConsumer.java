@@ -1,7 +1,7 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.Consumer;
-import it.menzani.logger.api.Level;
 import it.menzani.logger.lazy.AtomicLazy;
 import it.menzani.logger.lazy.Initializer;
 import it.menzani.logger.lazy.Lazy;
@@ -24,9 +24,9 @@ public final class FileConsumer implements Consumer, Initializer<Writer> {
     }
 
     @Override
-    public void consume(String entry, Level level) throws Exception {
+    public void consume(LogEntry entry, String formattedEntry) throws Exception {
         Writer writer = this.writer.get();
-        writer.write(entry);
+        writer.write(formattedEntry);
         writer.write(LINE_SEPARATOR);
         writer.flush();
     }

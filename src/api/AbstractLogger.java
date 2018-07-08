@@ -160,9 +160,9 @@ public abstract class AbstractLogger implements Logger {
         return Optional.empty();
     }
 
-    protected static void doConsume(Consumer consumer, String entry, Level level) {
+    protected static void doConsume(Consumer consumer, LogEntry entry, String formattedEntry) {
         try {
-            consumer.consume(entry, level);
+            consumer.consume(entry, formattedEntry);
         } catch (Exception e) {
             printPipelineError(Consumer.class, consumer);
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.Consumer;
 import it.menzani.logger.api.Level;
 
@@ -13,13 +14,14 @@ public final class JavaLoggerConsumer implements Consumer {
     }
 
     @Override
-    public void consume(String entry, Level level) {
+    public void consume(LogEntry entry, String formattedEntry) {
+        Level level = entry.getLevel();
         if (level instanceof StandardLevel) {
-            consume(entry, (StandardLevel) level);
+            consume(formattedEntry, (StandardLevel) level);
         } else if (level.isError()) {
-            logger.severe(entry);
+            logger.severe(formattedEntry);
         } else {
-            logger.info(entry);
+            logger.info(formattedEntry);
         }
     }
 

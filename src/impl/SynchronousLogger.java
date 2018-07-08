@@ -26,7 +26,7 @@ public final class SynchronousLogger extends PipelineLogger {
             Optional<String> formattedEntry = doFormat(pipeline.getFormatter(), entry);
             if (!formattedEntry.isPresent()) continue;
             pipeline.getConsumers()
-                    .forEach(consumer -> doConsume(consumer, formattedEntry.get(), entry.getLevel()));
+                    .forEach(consumer -> doConsume(consumer, entry, formattedEntry.get()));
         }
     }
 }

@@ -184,7 +184,7 @@ public final class AsynchronousLogger extends PipelineLogger {
             Optional<String> formattedEntry = doFormat(pipeline.getFormatter(), entry);
             if (!formattedEntry.isPresent()) return;
             joinAll(pipeline.getConsumers().stream()
-                    .map(consumer -> (Runnable) () -> doConsume(consumer, formattedEntry.get(), entry.getLevel()))
+                    .map(consumer -> (Runnable) () -> doConsume(consumer, entry, formattedEntry.get()))
                     .map(executor::submit));
         }
     }

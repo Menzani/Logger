@@ -8,6 +8,7 @@ public final class AtomicLazy<V> implements Lazy<V> {
     private final AtomicReference<V> cache = new AtomicReference<>();
     private final AtomicBoolean isComputing = new AtomicBoolean();
     private final Initializer<V> initializer;
+    private final Object cacheCheckMonitor = new Object();
     private final long maxCacheCheckInterval;
 
     public AtomicLazy(Initializer<V> initializer, long maxCacheCheckInterval) {
@@ -22,10 +23,14 @@ public final class AtomicLazy<V> implements Lazy<V> {
             if (isComputing.compareAndSet(false, true)) {
                 result = initializer.newInstance();
                 cache.set(result);
-                notifyAll();
+                synchronized (cacheCheckMonitor) {
+                    cacheCheckMonitor.notifyAll();
+                }
             } else {
-                while ((result = cache.get()) == null) {
-                    wait(maxCacheCheckInterval); // Timeout prevents deadlock
+                synchronized (cacheCheckMonitor) {
+                    while ((result = cache.get()) == null) {
+                        cacheCheckMonitor.wait(maxCacheCheckInterval); // Timeout prevents deadlock
+                    }
                 }
             }
         }

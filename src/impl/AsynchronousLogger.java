@@ -5,7 +5,6 @@ import it.menzani.logger.Pipeline;
 import it.menzani.logger.api.Filter;
 import it.menzani.logger.api.PipelineLogger;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
@@ -14,17 +13,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class AsynchronousLogger extends PipelineLogger {
-    private volatile int parallelism;
     private volatile ExecutorService executor;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
     private final Object queueMonitor = new Object();
 
     int getParallelism() {
-        return parallelism;
+        return ((ThreadPoolExecutor) executor).getCorePoolSize();
     }
 
     public AsynchronousLogger withParallelism(int parallelism) {
-        this.parallelism = parallelism;
         ThreadManager threadManager = new ThreadManager();
         if (executor == null) {
             Runtime.getRuntime()
@@ -43,7 +40,7 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     private int defaultParallelism() {
-        List<Pipeline> pipelines = getPipelines();
+        Set<Pipeline> pipelines = getPipelines();
         OptionalInt maxElements = Stream.concat(
                 pipelines.stream()
                         .map(Pipeline::getFilters),

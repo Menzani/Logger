@@ -3,14 +3,14 @@ package it.menzani.logger.api;
 import it.menzani.logger.Pipeline;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public abstract class PipelineLogger extends ToggleableLogger {
-    private final List<Pipeline> pipelines = new CopyOnWriteArrayList<>();
+    private final Set<Pipeline> pipelines = new CopyOnWriteArraySet<>();
 
-    public List<Pipeline> getPipelines() {
-        return Collections.unmodifiableList(pipelines);
+    protected Set<Pipeline> getPipelines() {
+        return Collections.unmodifiableSet(pipelines);
     }
 
     public PipelineLogger setPipelines(Pipeline... pipelines) {

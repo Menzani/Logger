@@ -100,4 +100,9 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
         consumers.forEach(clone::addConsumer);
         return clone;
     }
+
+    @Override
+    public String toString() {
+        return "{" + filters.size() + " -> " + consumers.size() + "}";
+    }
 }

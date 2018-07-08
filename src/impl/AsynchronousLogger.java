@@ -19,7 +19,7 @@ public final class AsynchronousLogger extends PipelineLogger {
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
     private final Object queueMonitor = new Object();
 
-    public int getParallelism() {
+    int getParallelism() {
         return parallelism;
     }
 

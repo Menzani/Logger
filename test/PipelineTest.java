@@ -20,6 +20,7 @@ class PipelineTest {
 
     @Test
     void isDisabled() {
+        assertFalse(pipeline.isDisabled());
         pipeline.disable();
         assertTrue(pipeline.isDisabled());
     }
@@ -27,13 +28,9 @@ class PipelineTest {
     @ParameterizedTest
     @EnumSource(StandardLevel.class)
     void getVerbosity(StandardLevel level) {
+        assertEquals(Optional.empty(), pipeline.getVerbosity());
         pipeline.withVerbosity(level);
         assertEquals(Optional.of(level), pipeline.getVerbosity());
-    }
-
-    @Test
-    void getVerbosityNoResult() {
-        assertEquals(Optional.empty(), pipeline.getVerbosity());
     }
 
     @Test
@@ -47,7 +44,7 @@ class PipelineTest {
 
     @ParameterizedTest
     @EnumSource(StandardLevel.class)
-    void isLoggableAlways(StandardLevel level) {
+    void isLoggable(StandardLevel level) {
         assertTrue(pipeline.isLoggable(level));
     }
 

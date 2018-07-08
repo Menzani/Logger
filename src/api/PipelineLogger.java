@@ -3,6 +3,8 @@ package it.menzani.logger.api;
 import it.menzani.logger.Pipeline;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -19,6 +21,13 @@ public abstract class PipelineLogger extends ToggleableNamedLogger {
 
     protected Set<Pipeline> getPipelines() {
         return Collections.unmodifiableSet(pipelines);
+    }
+
+    public Pipeline getPipeline(String name) {
+        return pipelines.stream()
+                .filter(pipeline -> pipeline.getName().equals(Optional.of(name))) // Implicit null check of `name`
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No pipeline found with name: " + name));
     }
 
     public PipelineLogger setPipelines(Pipeline... pipelines) {

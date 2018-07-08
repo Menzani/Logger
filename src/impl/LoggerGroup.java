@@ -5,6 +5,8 @@ import it.menzani.logger.api.Cloneable;
 import it.menzani.logger.api.*;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -21,6 +23,13 @@ public final class LoggerGroup extends ToggleableNamedLogger {
 
     public Set<Logger> getLoggers() {
         return Collections.unmodifiableSet(loggers);
+    }
+
+    public Logger getLogger(String name) {
+        return loggers.stream()
+                .filter(logger -> logger.getName().equals(Optional.of(name))) // Implicit null check of `name`
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No logger found with name: " + name));
     }
 
     public LoggerGroup setLoggers(Logger... loggers) {

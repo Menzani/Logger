@@ -56,13 +56,13 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
         return this;
     }
 
-    public Pipeline withVerbosity(Level level) {
+    public Pipeline setVerbosity(Level level) {
         addFilter(new LevelFilter(level));
         return this;
     }
 
-    public Pipeline withDefaultVerbosity() {
-        withVerbosity(StandardLevel.INFORMATION);
+    public Pipeline setDefaultVerbosity() {
+        setVerbosity(StandardLevel.INFORMATION);
         return this;
     }
 

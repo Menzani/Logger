@@ -21,7 +21,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         return ((ThreadPoolExecutor) executor).getCorePoolSize();
     }
 
-    public AsynchronousLogger withParallelism(int parallelism) {
+    public AsynchronousLogger setParallelism(int parallelism) {
         ThreadManager threadManager = new ThreadManager();
         if (executor == null) {
             Runtime.getRuntime()
@@ -34,8 +34,8 @@ public final class AsynchronousLogger extends PipelineLogger {
         return this;
     }
 
-    public AsynchronousLogger withDefaultParallelism() {
-        withParallelism(defaultParallelism());
+    public AsynchronousLogger setDefaultParallelism() {
+        setParallelism(defaultParallelism());
         return this;
     }
 

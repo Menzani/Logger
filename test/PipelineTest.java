@@ -29,16 +29,16 @@ class PipelineTest {
     @EnumSource(StandardLevel.class)
     void getVerbosity(StandardLevel level) {
         assertEquals(Optional.empty(), pipeline.getVerbosity());
-        pipeline.withVerbosity(level);
+        pipeline.setVerbosity(level);
         assertEquals(Optional.of(level), pipeline.getVerbosity());
     }
 
     @Test
     void getVerbosityMultipleValues() {
-        pipeline.withVerbosity(StandardLevel.INFORMATION);
-        pipeline.withVerbosity(StandardLevel.FINE);
+        pipeline.setVerbosity(StandardLevel.INFORMATION);
+        pipeline.setVerbosity(StandardLevel.FINE);
         assertEquals(Optional.of(StandardLevel.INFORMATION), pipeline.getVerbosity());
-        pipeline.withVerbosity(StandardLevel.WARNING);
+        pipeline.setVerbosity(StandardLevel.WARNING);
         assertEquals(Optional.of(StandardLevel.WARNING), pipeline.getVerbosity());
     }
 
@@ -50,7 +50,7 @@ class PipelineTest {
 
     @Test
     void isLoggable() {
-        pipeline.withVerbosity(StandardLevel.INFORMATION);
+        pipeline.setVerbosity(StandardLevel.INFORMATION);
         assertTrue(pipeline.isLoggable(StandardLevel.INFORMATION));
         assertTrue(pipeline.isLoggable(StandardLevel.FATAL));
         assertFalse(pipeline.isLoggable(StandardLevel.FINE));

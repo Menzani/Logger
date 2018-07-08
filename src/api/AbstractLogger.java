@@ -122,6 +122,8 @@ public abstract class AbstractLogger implements Logger {
         tryLog(new LogEntry(level, message, null));
     }
 
+    protected abstract void tryLog(LogEntry entry);
+
     @Override
     public abstract AbstractLogger clone();
 
@@ -130,8 +132,6 @@ public abstract class AbstractLogger implements Logger {
         t.printStackTrace(new PrintWriter(writer));
         return writer.toString();
     }
-
-    protected abstract void tryLog(LogEntry entry);
 
     protected static void printLoggerError(String message) {
         System.err.println("[Logger] " + message);

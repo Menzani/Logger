@@ -16,7 +16,7 @@ class AsynchronousLoggerTest extends AbstractLoggerTest {
     protected AsynchronousLogger newLogger(Pipeline pipeline) {
         return new AsynchronousLogger()
                 .addPipeline(pipeline)
-                .withDefaultParallelism();
+                .setDefaultParallelism();
     }
 
     @ParameterizedTest
@@ -24,7 +24,7 @@ class AsynchronousLoggerTest extends AbstractLoggerTest {
     void defaultParallelism(Pipeline[] pipelines, int expectedParallelism) {
         AsynchronousLogger logger = new AsynchronousLogger()
                 .setPipelines(pipelines)
-                .withDefaultParallelism();
+                .setDefaultParallelism();
         assertEquals(expectedParallelism, logger.getParallelism());
     }
 

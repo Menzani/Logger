@@ -74,6 +74,13 @@ public final class Pipeline implements Toggleable, Cloneable<Pipeline> {
                 .min(new Level.Comparator());
     }
 
+    public boolean isLoggable(Level level) {
+        return getVerbosity()
+                .map(level::compareTo)
+                .map(verbosity -> verbosity != Level.Verbosity.GREATER)
+                .orElse(true);
+    }
+
     @Override
     public void disable() {
         addFilter(new RejectAllFilter());

@@ -8,8 +8,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PipelineTest {
     private Pipeline pipeline;
@@ -44,5 +43,20 @@ class PipelineTest {
         assertEquals(Optional.of(StandardLevel.INFORMATION), pipeline.getVerbosity());
         pipeline.withVerbosity(StandardLevel.WARNING);
         assertEquals(Optional.of(StandardLevel.WARNING), pipeline.getVerbosity());
+    }
+
+    @ParameterizedTest
+    @EnumSource(StandardLevel.class)
+    void isLoggableAlways(StandardLevel level) {
+        assertTrue(pipeline.isLoggable(level));
+    }
+
+    @Test
+    void isLoggable() {
+        pipeline.withVerbosity(StandardLevel.INFORMATION);
+        assertTrue(pipeline.isLoggable(StandardLevel.INFORMATION));
+        assertTrue(pipeline.isLoggable(StandardLevel.FATAL));
+        assertFalse(pipeline.isLoggable(StandardLevel.FINE));
+        assertFalse(pipeline.isLoggable(StandardLevel.TRACE));
     }
 }

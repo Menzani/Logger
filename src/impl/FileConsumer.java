@@ -17,7 +17,7 @@ public final class FileConsumer implements Consumer, Initializer<Writer> {
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
     private final Path file;
-    private final Lazy<Writer> writer = new AtomicLazy<>(this, 500);
+    private final Lazy<Writer> writer = new AtomicLazy<>(this, 10);
 
     public FileConsumer(Path file) {
         this.file = file;

@@ -3,7 +3,6 @@ package it.menzani.logger.impl;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.Consumer;
 import it.menzani.logger.lazy.AtomicLazy;
-import it.menzani.logger.lazy.Initializer;
 import it.menzani.logger.lazy.Lazy;
 
 import java.io.IOException;
@@ -13,8 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-public final class FileConsumer implements Consumer, Initializer<Writer> {
-    private static final String LINE_SEPARATOR = System.lineSeparator();
+public final class FileConsumer implements Consumer, Lazy.Initializer<Writer> {
+    private static final String lineSeparator = System.lineSeparator();
 
     private final Path file;
     private final Lazy<Writer> writer = new AtomicLazy<>(this, 10);
@@ -27,7 +26,7 @@ public final class FileConsumer implements Consumer, Initializer<Writer> {
     public void consume(LogEntry entry, String formattedEntry) throws Exception {
         Writer writer = this.writer.get();
         writer.write(formattedEntry);
-        writer.write(LINE_SEPARATOR);
+        writer.write(lineSeparator);
         writer.flush();
     }
 

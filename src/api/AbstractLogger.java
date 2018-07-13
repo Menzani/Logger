@@ -174,7 +174,7 @@ public abstract class AbstractLogger implements Logger {
         printLoggerError("Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
 
-    enum ReservedLevel implements Level {
+    protected enum ReservedLevel implements Level {
         LOGGER(-1, "LOGGER", false);
 
         private final int verbosity;

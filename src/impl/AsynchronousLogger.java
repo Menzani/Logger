@@ -42,6 +42,16 @@ public final class AsynchronousLogger extends PipelineLogger {
         return this;
     }
 
+    public AsynchronousLogger setDefaultParallelism(boolean log) {
+        setDefaultParallelism();
+        if (log) {
+            log(ReservedLevel.LOGGER, "Parallelism of AsynchronousLogger " +
+                    getName().map(name -> '\'' + name + "' ").orElse("") +
+                    "set to " + getParallelism());
+        }
+        return this;
+    }
+
     public AsynchronousLogger setDefaultParallelism() {
         setParallelism(defaultParallelism());
         return this;

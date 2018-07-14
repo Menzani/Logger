@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
     private final String name;
     private final Set<Filter> filters = new CopyOnWriteArraySet<>();
-    private volatile Formatter formatter = new MessageFormatter();
+    private volatile Producer producer = new Producer().append(new MessageFormatter());
     private final Set<Consumer> consumers = new CopyOnWriteArraySet<>();
 
     public Pipeline() {
@@ -35,8 +35,8 @@ public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
         return Collections.unmodifiableSet(filters);
     }
 
-    public Formatter getFormatter() {
-        return formatter;
+    public Producer getProducer() {
+        return producer;
     }
 
     public Set<Consumer> getConsumers() {
@@ -49,8 +49,8 @@ public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
         return this;
     }
 
-    public Pipeline setFormatter(Formatter formatter) {
-        this.formatter = formatter;
+    public Pipeline setProducer(Producer producer) {
+        this.producer = producer;
         return this;
     }
 
@@ -110,7 +110,7 @@ public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
     public Pipeline clone() {
         Pipeline clone = new Pipeline(getName().orElse(null));
         filters.forEach(clone::addFilter);
-        clone.setFormatter(formatter);
+        clone.setProducer(producer);
         consumers.forEach(clone::addConsumer);
         return clone;
     }

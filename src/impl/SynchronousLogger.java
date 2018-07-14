@@ -2,9 +2,14 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.Pipeline;
+import it.menzani.logger.Producer;
+import it.menzani.logger.api.Formatter;
 import it.menzani.logger.api.PipelineLogger;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public final class SynchronousLogger extends PipelineLogger {
     public SynchronousLogger() {
@@ -31,9 +36,13 @@ public final class SynchronousLogger extends PipelineLogger {
             boolean rejected = pipeline.getFilters().stream()
                     .anyMatch(filter -> filter.test(entry));
             if (rejected) continue;
-            Optional<String> formattedEntry = pipeline.getFormatter()
-                    .apply(entry, this);
+
+            Producer producer = pipeline.getProducer();
+            Map<Formatter, Optional<String>> formattedElements = producer.getFormatters()
+                    .collect(Collectors.toMap(Function.identity(), formatter -> formatter.apply(entry, this)));
+            Optional<String> formattedEntry = producer.produce(formattedElements);
             if (!formattedEntry.isPresent()) continue;
+
             pipeline.getConsumers()
                     .forEach(consumer -> consumer.accept(entry, formattedEntry.get()));
         }

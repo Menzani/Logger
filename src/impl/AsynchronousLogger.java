@@ -2,12 +2,12 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.Pipeline;
+import it.menzani.logger.Producer;
 import it.menzani.logger.api.Filter;
+import it.menzani.logger.api.Formatter;
 import it.menzani.logger.api.PipelineLogger;
 
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,10 +96,14 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
-    private static void joinAll(Stream<Future<?>> futures) throws InterruptedException, ExecutionException {
-        for (Future<?> future : futures.collect(Collectors.toSet())) {
-            future.get();
+    private static <T> Stream<T> joinAll(Stream<Future<T>> futures) throws InterruptedException, ExecutionException {
+        Stream.Builder<T> builder = Stream.builder();
+        for (Future<T> future : futures.collect(Collectors.toSet())) {
+            T result = future.get();
+            if (result == null) continue;
+            builder.accept(result);
         }
+        return builder.build();
     }
 
     private final class ThreadManager implements ThreadFactory, Runnable {
@@ -194,12 +198,19 @@ public final class AsynchronousLogger extends PipelineLogger {
                 }
             }
 
-            Optional<String> formattedEntry = pipeline.getFormatter()
-                    .apply(entry, AsynchronousLogger.this);
+            Producer producer = pipeline.getProducer();
+            Map<Formatter, Optional<String>> formattedElements = joinAll(producer.getFormatters()
+                    .map(formatter -> (Callable<Map.Entry<Formatter, Optional<String>>>)
+                            () -> new AbstractMap.SimpleImmutableEntry<>(
+                                    formatter, formatter.apply(entry, AsynchronousLogger.this)))
+                    .map(executor::submit))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Optional<String> formattedEntry = producer.produce(formattedElements);
             if (!formattedEntry.isPresent()) return;
+
             joinAll(pipeline.getConsumers().stream()
                     .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry.get()))
-                    .map(executor::submit));
+                    .map(task -> executor.submit(task)));
         }
     }
 

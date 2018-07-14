@@ -1,9 +1,8 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.Pipeline;
-import it.menzani.logger.impl.BufferConsumer;
-import it.menzani.logger.impl.StandardLevel;
-import it.menzani.logger.impl.TimestampFormatter;
+import it.menzani.logger.Producer;
+import it.menzani.logger.impl.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -20,7 +19,13 @@ public abstract class AbstractLoggerTest {
     void init() {
         consumer = new BufferConsumer();
         logger = newLogger(new Pipeline()
-                .setFormatter(new TimestampFormatter())
+                .setProducer(new Producer()
+                        .append("[")
+                        .append(new TimestampFormatter())
+                        .append(" ")
+                        .append(new LevelFormatter())
+                        .append("] ")
+                        .append(new MessageFormatter()))
                 .addConsumer(consumer));
     }
 
@@ -33,8 +38,8 @@ public abstract class AbstractLoggerTest {
         logger.log(level, message);
 
         String entry = consumer.nextEntry();
-        assertTrue(entry.contains(level.getMarker()));
-        assertTrue(entry.contains(message.toString()));
+        assertTrue(entry.contains(' ' + level.getMarker() + "] "));
+        assertTrue(entry.contains("] " + message.toString()));
     }
 
     @ParameterizedTest
@@ -44,8 +49,8 @@ public abstract class AbstractLoggerTest {
         logger.log(level, () -> message);
 
         String entry = consumer.nextEntry();
-        assertTrue(entry.contains(level.getMarker()));
-        assertTrue(entry.contains(message.toString()));
+        assertTrue(entry.contains(' ' + level.getMarker() + "] "));
+        assertTrue(entry.contains("] " + message.toString()));
     }
 
     @ParameterizedTest
@@ -56,10 +61,10 @@ public abstract class AbstractLoggerTest {
 
         String entry = consumer.nextEntry();
         final String loggerMarker = AbstractLogger.ReservedLevel.LOGGER.getMarker();
-        assertTrue(entry.contains(loggerMarker));
+        assertTrue(entry.contains(' ' + loggerMarker + "] "));
         assertTrue(entry.contains("Could not evaluate lazy message at level: " + level.getMarker()));
         entry = consumer.nextEntry();
-        assertTrue(entry.contains(loggerMarker));
+        assertTrue(entry.contains(' ' + loggerMarker + "] "));
         assertTrue(entry.contains(AbstractLogger.throwableToString(e)));
     }
 }

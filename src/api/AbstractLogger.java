@@ -1,13 +1,11 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.EvaluationException;
 import it.menzani.logger.LogEntry;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Optional;
 
 public abstract class AbstractLogger implements Logger {
     @Override
@@ -133,41 +131,6 @@ public abstract class AbstractLogger implements Logger {
         return writer.toString();
     }
 
-    protected static boolean doFilter(Filter filter, LogEntry entry) {
-        try {
-            return filter.reject(entry);
-        } catch (Exception e) {
-            Error error = new PipelineError(Filter.class, filter);
-            error.print();
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-    protected Optional<String> doFormat(Formatter formatter, LogEntry entry) {
-        try {
-            return Optional.ofNullable(formatter.format(entry));
-        } catch (EvaluationException e) {
-            String levelMarker = entry.getLevel().getMarker();
-            throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + levelMarker);
-        } catch (Exception e) {
-            Error error = new PipelineError(Formatter.class, formatter);
-            error.print();
-            e.printStackTrace();
-        }
-        return Optional.empty();
-    }
-
-    protected static void doConsume(Consumer consumer, LogEntry entry, String formattedEntry) {
-        try {
-            consumer.consume(entry, formattedEntry);
-        } catch (Exception e) {
-            Error error = new PipelineError(Consumer.class, consumer);
-            error.print();
-            e.printStackTrace();
-        }
-    }
-
     protected enum ReservedLevel implements Level {
         LOGGER(-1, "LOGGER", false);
 
@@ -209,8 +172,8 @@ public abstract class AbstractLogger implements Logger {
         }
     }
 
-    private static final class PipelineError extends Error {
-        private PipelineError(Class<?> apiClass, Object implObject) {
+    static final class PipelineError extends Error {
+        PipelineError(Class<?> apiClass, Object implObject) {
             super("Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
             assert apiClass == Filter.class || apiClass == Formatter.class || apiClass == Consumer.class;
         }

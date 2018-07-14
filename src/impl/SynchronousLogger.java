@@ -29,12 +29,13 @@ public final class SynchronousLogger extends PipelineLogger {
     protected void doLog(LogEntry entry) {
         for (Pipeline pipeline : getPipelines()) {
             boolean rejected = pipeline.getFilters().stream()
-                    .anyMatch(filter -> doFilter(filter, entry));
+                    .anyMatch(filter -> filter.rejectThrowing(entry));
             if (rejected) continue;
-            Optional<String> formattedEntry = doFormat(pipeline.getFormatter(), entry);
+            Optional<String> formattedEntry = pipeline.getFormatter()
+                    .formatThrowing(entry, this);
             if (!formattedEntry.isPresent()) continue;
             pipeline.getConsumers()
-                    .forEach(consumer -> doConsume(consumer, entry, formattedEntry.get()));
+                    .forEach(consumer -> consumer.consumeThrowing(entry, formattedEntry.get()));
         }
     }
 }

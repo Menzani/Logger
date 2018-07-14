@@ -1,7 +1,5 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.Pipeline;
-import it.menzani.logger.Producer;
 import it.menzani.logger.impl.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;

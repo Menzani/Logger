@@ -1,4 +1,4 @@
-package it.menzani.logger;
+package it.menzani.logger.impl;
 
 import it.menzani.logger.api.Formatter;
 

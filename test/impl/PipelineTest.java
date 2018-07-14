@@ -1,6 +1,5 @@
-package it.menzani.logger;
+package it.menzani.logger.impl;
 
-import it.menzani.logger.impl.StandardLevel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

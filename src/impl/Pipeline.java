@@ -1,11 +1,7 @@
-package it.menzani.logger;
+package it.menzani.logger.impl;
 
 import it.menzani.logger.api.Cloneable;
 import it.menzani.logger.api.*;
-import it.menzani.logger.impl.LevelFilter;
-import it.menzani.logger.impl.MessageFormatter;
-import it.menzani.logger.impl.RejectAllFilter;
-import it.menzani.logger.impl.StandardLevel;
 
 import java.util.Collections;
 import java.util.Optional;

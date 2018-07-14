@@ -1,6 +1,5 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.LogEntry;
 import it.menzani.logger.api.Consumer;
 import it.menzani.logger.api.Level;
 

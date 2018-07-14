@@ -1,9 +1,8 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.LogEntry;
+import it.menzani.logger.AtomicLazy;
+import it.menzani.logger.Lazy;
 import it.menzani.logger.api.Consumer;
-import it.menzani.logger.lazy.AtomicLazy;
-import it.menzani.logger.lazy.Lazy;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

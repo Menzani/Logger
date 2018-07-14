@@ -1,6 +1,6 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.Pipeline;
+import it.menzani.logger.impl.Pipeline;
 
 import java.util.Collections;
 import java.util.NoSuchElementException;

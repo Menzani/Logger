@@ -1,7 +1,5 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.LogEntry;
-import it.menzani.logger.Pipeline;
 import it.menzani.logger.api.AbstractLoggerTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

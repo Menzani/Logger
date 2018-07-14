@@ -1,4 +1,4 @@
-package it.menzani.logger.lazy;
+package it.menzani.logger;
 
 public interface Lazy<V> {
     V get() throws Exception;

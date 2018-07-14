@@ -1,6 +1,4 @@
-package it.menzani.logger;
-
-import it.menzani.logger.api.Cloneable;
+package it.menzani.logger.api;
 
 public final class CloneException extends RuntimeException {
     public CloneException(Cloneable<?> cloneable) {

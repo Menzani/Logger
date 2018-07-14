@@ -1,4 +1,4 @@
-package it.menzani.logger.lazy;
+package it.menzani.logger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;

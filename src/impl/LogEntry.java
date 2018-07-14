@@ -1,9 +1,9 @@
-package it.menzani.logger;
+package it.menzani.logger.impl;
 
+import it.menzani.logger.AtomicLazy;
+import it.menzani.logger.Lazy;
 import it.menzani.logger.api.LazyMessage;
 import it.menzani.logger.api.Level;
-import it.menzani.logger.lazy.AtomicLazy;
-import it.menzani.logger.lazy.Lazy;
 
 public final class LogEntry {
     private final Level level;

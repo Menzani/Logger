@@ -1,6 +1,6 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.Pipeline;
+import it.menzani.logger.impl.Pipeline;
 import it.menzani.logger.impl.SynchronousLogger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

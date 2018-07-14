@@ -1,7 +1,7 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.EvaluationException;
-import it.menzani.logger.LogEntry;
+import it.menzani.logger.impl.EvaluationException;
+import it.menzani.logger.impl.LogEntry;
 
 import java.util.Optional;
 import java.util.function.BiFunction;

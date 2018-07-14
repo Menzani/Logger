@@ -1,6 +1,6 @@
 package it.menzani.logger.api;
 
-import it.menzani.logger.LogEntry;
+import it.menzani.logger.impl.LogEntry;
 
 import java.util.function.BiConsumer;
 

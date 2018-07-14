@@ -1,6 +1,5 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.Pipeline;
 import it.menzani.logger.api.AbstractLoggerTest;
 import it.menzani.logger.api.PipelineLogger;
 

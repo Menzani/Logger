@@ -38,16 +38,16 @@ public final class SynchronousLogger extends PipelineLogger {
             if (rejected) continue;
 
             Producer producer = pipeline.getProducer();
-            Map<Formatter, Optional<String>> formattedElements = producer.getFormatters().stream()
+            Map<Formatter, Optional<String>> formattedFragments = producer.getFormatters().stream()
                     .collect(Collectors.toMap(Function.identity(), formatter -> formatter.apply(logEntry, this)));
-            if (!formattedElements.values().stream()
+            if (!formattedFragments.values().stream()
                     .allMatch(Optional::isPresent)) continue;
             String formattedEntry = producer.produce(
-                    formattedElements.entrySet().stream()
+                    formattedFragments.entrySet().stream()
                             .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-                                Optional<String> formattedElement = entry.getValue();
-                                assert formattedElement.isPresent();
-                                return formattedElement.get();
+                                Optional<String> formattedFragment = entry.getValue();
+                                assert formattedFragment.isPresent();
+                                return formattedFragment.get();
                             })));
 
             pipeline.getConsumers()

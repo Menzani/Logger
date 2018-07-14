@@ -61,7 +61,7 @@ public final class AsynchronousLogger extends PipelineLogger {
 
     private int defaultParallelism() {
         Set<Pipeline> pipelines = getPipelines();
-        OptionalInt maxElements = Stream.of(
+        OptionalInt maxComponents = Stream.of(
                 pipelines.stream()
                         .map(Pipeline::getFilters),
                 pipelines.stream()
@@ -72,7 +72,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                 .flatMap(Function.identity())
                 .mapToInt(Set::size)
                 .max();
-        return 1 + pipelines.size() + maxElements.orElse(0);
+        return 1 + pipelines.size() + maxComponents.orElse(0);
     }
 
     @Override
@@ -184,32 +184,32 @@ public final class AsynchronousLogger extends PipelineLogger {
             if (failure) return;
 
             Producer producer = pipeline.getProducer();
-            Map<Formatter, String> formattedElements = new HashMap<>();
+            Map<Formatter, String> formattedFragments = new HashMap<>();
             failure = joinAny(producer.getFormatters(),
                     formatter -> () -> new AbstractMap.SimpleImmutableEntry<>(
                             formatter, formatter.apply(entry, AsynchronousLogger.this)),
                     entry -> {
-                        Optional<String> formattedEntry = entry.getValue();
-                        if (!formattedEntry.isPresent()) return true;
-                        formattedElements.put(entry.getKey(), formattedEntry.get());
+                        Optional<String> formattedFragment = entry.getValue();
+                        if (!formattedFragment.isPresent()) return true;
+                        formattedFragments.put(entry.getKey(), formattedFragment.get());
                         return false;
                     });
             if (failure) return;
-            String formattedEntry = producer.produce(formattedElements);
+            String formattedEntry = producer.produce(formattedFragments);
 
             joinAll(pipeline.getConsumers().stream()
                     .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry))
                     .map(executor::submit));
         }
 
-        private <T, V> boolean joinAny(Set<T> elements, Function<T, Callable<V>> callableFactory,
+        private <T, V> boolean joinAny(Set<T> components, Function<T, Callable<V>> callableFactory,
                                        Predicate<V> failureTester) throws InterruptedException, ExecutionException {
             CompletionService<V> completion = new ExecutorCompletionService<>(executor);
-            Future<?>[] futures = new Future<?>[elements.size()];
+            Future<?>[] futures = new Future<?>[components.size()];
             int i = 0;
-            for (T element : elements) {
-                assert Filter.class.isInstance(element) || Formatter.class.isInstance(element);
-                Future<V> future = completion.submit(callableFactory.apply(element));
+            for (T component : components) {
+                assert Filter.class.isInstance(component) || Formatter.class.isInstance(component);
+                Future<V> future = completion.submit(callableFactory.apply(component));
                 futures[i++] = future;
             }
             assert i == futures.length;

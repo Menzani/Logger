@@ -5,7 +5,7 @@ import it.menzani.logger.api.Formatter;
 import java.util.*;
 
 public final class Producer {
-    private final List<Object> elements = new ArrayList<>();
+    private final List<Object> fragments = new ArrayList<>();
     private final Set<Formatter> formatters = new HashSet<>();
 
     public Set<Formatter> getFormatters() {
@@ -13,23 +13,23 @@ public final class Producer {
     }
 
     public Producer append(Formatter formatter) {
-        elements.add(formatter);
+        fragments.add(formatter);
         formatters.add(formatter);
         return this;
     }
 
     public Producer append(CharSequence charSequence) {
-        elements.add(charSequence);
+        fragments.add(charSequence);
         return this;
     }
 
-    public String produce(Map<Formatter, String> formattedElements) {
+    public String produce(Map<Formatter, String> formattedFragments) {
         StringBuilder builder = new StringBuilder();
-        for (Object element : elements) {
-            if (element instanceof Formatter) {
-                builder.append(formattedElements.get(element));
+        for (Object fragment : fragments) {
+            if (fragment instanceof Formatter) {
+                builder.append(formattedFragments.get(fragment));
             } else {
-                builder.append((CharSequence) element);
+                builder.append((CharSequence) fragment);
             }
         }
         return builder.toString();
@@ -37,6 +37,6 @@ public final class Producer {
 
     @Override
     public String toString() {
-        return formatters.size() + "+" + (elements.size() - formatters.size());
+        return formatters.size() + "+" + (fragments.size() - formatters.size());
     }
 }

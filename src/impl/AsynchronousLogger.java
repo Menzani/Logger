@@ -9,6 +9,8 @@ import it.menzani.logger.api.PipelineLogger;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -96,14 +98,10 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
-    private static <T> Stream<T> joinAll(Stream<Future<T>> futures) throws InterruptedException, ExecutionException {
-        Stream.Builder<T> builder = Stream.builder();
-        for (Future<T> future : futures.collect(Collectors.toSet())) {
-            T result = future.get();
-            if (result == null) continue;
-            builder.accept(result);
+    private static void joinAll(Stream<Future<?>> futures) throws InterruptedException, ExecutionException {
+        for (Future<?> future : futures.collect(Collectors.toSet())) {
+            future.get();
         }
-        return builder.build();
     }
 
     private final class ThreadManager implements ThreadFactory, Runnable {
@@ -178,39 +176,50 @@ public final class AsynchronousLogger extends PipelineLogger {
         }
 
         private void run() throws InterruptedException, ExecutionException {
-            Set<Filter> filters = pipeline.getFilters();
-            CompletionService<Boolean> completion = new ExecutorCompletionService<>(executor);
-            Future<?>[] futures = new Future<?>[filters.size()];
+            boolean failure = joinAny(pipeline.getFilters(), filter -> () -> filter.test(entry), Boolean::booleanValue);
+            if (failure) return;
+
+            Producer producer = pipeline.getProducer();
+            Map<Formatter, String> formattedElements = new HashMap<>();
+            failure = joinAny(producer.getFormatters(),
+                    formatter -> () -> new AbstractMap.SimpleImmutableEntry<>(
+                            formatter, formatter.apply(entry, AsynchronousLogger.this)),
+                    entry -> {
+                        Optional<String> formattedEntry = entry.getValue();
+                        if (!formattedEntry.isPresent()) return true;
+                        formattedElements.put(entry.getKey(), formattedEntry.get());
+                        return false;
+                    });
+            if (failure) return;
+            String formattedEntry = producer.produce(formattedElements);
+
+            joinAll(pipeline.getConsumers().stream()
+                    .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry))
+                    .map(executor::submit));
+        }
+
+        private <T, V> boolean joinAny(Set<T> elements, Function<T, Callable<V>> callableFactory,
+                                       Predicate<V> failureTester) throws InterruptedException, ExecutionException {
+            CompletionService<V> completion = new ExecutorCompletionService<>(executor);
+            Future<?>[] futures = new Future<?>[elements.size()];
             int i = 0;
-            for (Filter filter : filters) {
-                Future<Boolean> future = completion.submit(() -> filter.test(entry));
+            for (T element : elements) {
+                assert Filter.class.isInstance(element) || Formatter.class.isInstance(element);
+                Future<V> future = completion.submit(callableFactory.apply(element));
                 futures[i++] = future;
             }
             assert i == futures.length;
             try {
                 for (int j = 0; j < i; j++) {
-                    boolean rejected = completion.take().get();
-                    if (rejected) return;
+                    V value = completion.take().get();
+                    if (failureTester.test(value)) return true;
                 }
             } finally {
                 for (Future<?> future : futures) {
                     future.cancel(true);
                 }
             }
-
-            Producer producer = pipeline.getProducer();
-            Map<Formatter, Optional<String>> formattedElements = joinAll(producer.getFormatters()
-                    .map(formatter -> (Callable<Map.Entry<Formatter, Optional<String>>>)
-                            () -> new AbstractMap.SimpleImmutableEntry<>(
-                                    formatter, formatter.apply(entry, AsynchronousLogger.this)))
-                    .map(executor::submit))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-            Optional<String> formattedEntry = producer.produce(formattedElements);
-            if (!formattedEntry.isPresent()) return;
-
-            joinAll(pipeline.getConsumers().stream()
-                    .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry.get()))
-                    .map(task -> executor.submit(task)));
+            return false;
         }
     }
 

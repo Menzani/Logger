@@ -2,23 +2,19 @@ package it.menzani.logger;
 
 import it.menzani.logger.api.Formatter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.*;
 
 public final class Producer {
     private final List<Object> elements = new ArrayList<>();
+    private final Set<Formatter> formatters = new HashSet<>();
 
-    public Stream<Formatter> getFormatters() {
-        return elements.stream()
-                .filter(Formatter.class::isInstance)
-                .map(Formatter.class::cast);
+    public Set<Formatter> getFormatters() {
+        return Collections.unmodifiableSet(formatters);
     }
 
     public Producer append(Formatter formatter) {
         elements.add(formatter);
+        formatters.add(formatter);
         return this;
     }
 
@@ -27,19 +23,15 @@ public final class Producer {
         return this;
     }
 
-    public Optional<String> produce(Map<Formatter, Optional<String>> formattedElements) {
-        if (!formattedElements.values().stream()
-                .allMatch(Optional::isPresent)) return Optional.empty();
+    public String produce(Map<Formatter, String> formattedElements) {
         StringBuilder builder = new StringBuilder();
         for (Object element : elements) {
             if (element instanceof Formatter) {
-                Optional<String> formattedElement = formattedElements.get(element);
-                assert formattedElement.isPresent();
-                builder.append(formattedElement.get());
+                builder.append(formattedElements.get(element));
             } else {
                 builder.append((CharSequence) element);
             }
         }
-        return Optional.of(builder.toString());
+        return builder.toString();
     }
 }

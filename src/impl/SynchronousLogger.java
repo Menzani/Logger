@@ -31,20 +31,27 @@ public final class SynchronousLogger extends PipelineLogger {
     }
 
     @Override
-    protected void doLog(LogEntry entry) {
+    protected void doLog(LogEntry logEntry) {
         for (Pipeline pipeline : getPipelines()) {
             boolean rejected = pipeline.getFilters().stream()
-                    .anyMatch(filter -> filter.test(entry));
+                    .anyMatch(filter -> filter.test(logEntry));
             if (rejected) continue;
 
             Producer producer = pipeline.getProducer();
-            Map<Formatter, Optional<String>> formattedElements = producer.getFormatters()
-                    .collect(Collectors.toMap(Function.identity(), formatter -> formatter.apply(entry, this)));
-            Optional<String> formattedEntry = producer.produce(formattedElements);
-            if (!formattedEntry.isPresent()) continue;
+            Map<Formatter, Optional<String>> formattedElements = producer.getFormatters().stream()
+                    .collect(Collectors.toMap(Function.identity(), formatter -> formatter.apply(logEntry, this)));
+            if (!formattedElements.values().stream()
+                    .allMatch(Optional::isPresent)) continue;
+            String formattedEntry = producer.produce(
+                    formattedElements.entrySet().stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+                                Optional<String> formattedElement = entry.getValue();
+                                assert formattedElement.isPresent();
+                                return formattedElement.get();
+                            })));
 
             pipeline.getConsumers()
-                    .forEach(consumer -> consumer.accept(entry, formattedEntry.get()));
+                    .forEach(consumer -> consumer.accept(logEntry, formattedEntry));
         }
     }
 }

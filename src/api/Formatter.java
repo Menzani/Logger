@@ -4,11 +4,12 @@ import it.menzani.logger.EvaluationException;
 import it.menzani.logger.LogEntry;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 
-public interface Formatter {
+public interface Formatter extends BiFunction<LogEntry, Logger, Optional<String>> {
     String format(LogEntry entry) throws Exception;
 
-    default Optional<String> formatThrowing(LogEntry entry, Logger logger) {
+    default Optional<String> apply(LogEntry entry, Logger logger) {
         try {
             return Optional.ofNullable(format(entry));
         } catch (EvaluationException e) {

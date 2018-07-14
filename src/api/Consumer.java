@@ -2,10 +2,12 @@ package it.menzani.logger.api;
 
 import it.menzani.logger.LogEntry;
 
-public interface Consumer {
+import java.util.function.BiConsumer;
+
+public interface Consumer extends BiConsumer<LogEntry, String> {
     void consume(LogEntry entry, String formattedEntry) throws Exception;
 
-    default void consumeThrowing(LogEntry entry, String formattedEntry) {
+    default void accept(LogEntry entry, String formattedEntry) {
         try {
             consume(entry, formattedEntry);
         } catch (Exception e) {

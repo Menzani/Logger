@@ -179,7 +179,7 @@ public final class AsynchronousLogger extends PipelineLogger {
             Future<?>[] futures = new Future<?>[filters.size()];
             int i = 0;
             for (Filter filter : filters) {
-                Future<Boolean> future = completion.submit(() -> filter.rejectThrowing(entry));
+                Future<Boolean> future = completion.submit(() -> filter.test(entry));
                 futures[i++] = future;
             }
             assert i == futures.length;
@@ -195,10 +195,10 @@ public final class AsynchronousLogger extends PipelineLogger {
             }
 
             Optional<String> formattedEntry = pipeline.getFormatter()
-                    .formatThrowing(entry, AsynchronousLogger.this);
+                    .apply(entry, AsynchronousLogger.this);
             if (!formattedEntry.isPresent()) return;
             joinAll(pipeline.getConsumers().stream()
-                    .map(consumer -> (Runnable) () -> consumer.consumeThrowing(entry, formattedEntry.get()))
+                    .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry.get()))
                     .map(executor::submit));
         }
     }

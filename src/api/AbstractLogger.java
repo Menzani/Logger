@@ -133,15 +133,12 @@ public abstract class AbstractLogger implements Logger {
         return writer.toString();
     }
 
-    protected static void printLoggerError(String message) {
-        System.err.println("[Logger] " + message);
-    }
-
     protected static boolean doFilter(Filter filter, LogEntry entry) {
         try {
             return filter.reject(entry);
         } catch (Exception e) {
-            printPipelineError(Filter.class, filter);
+            Error error = new PipelineError(Filter.class, filter);
+            error.print();
             e.printStackTrace();
             return true;
         }
@@ -154,7 +151,8 @@ public abstract class AbstractLogger implements Logger {
             String levelMarker = entry.getLevel().getMarker();
             throwable(ReservedLevel.LOGGER, e.getCause(), "Could not evaluate lazy message at level: " + levelMarker);
         } catch (Exception e) {
-            printPipelineError(Formatter.class, formatter);
+            Error error = new PipelineError(Formatter.class, formatter);
+            error.print();
             e.printStackTrace();
         }
         return Optional.empty();
@@ -164,14 +162,10 @@ public abstract class AbstractLogger implements Logger {
         try {
             consumer.consume(entry, formattedEntry);
         } catch (Exception e) {
-            printPipelineError(Consumer.class, consumer);
+            Error error = new PipelineError(Consumer.class, consumer);
+            error.print();
             e.printStackTrace();
         }
-    }
-
-    private static void printPipelineError(Class<?> apiClass, Object implObject) {
-        assert apiClass == Filter.class || apiClass == Formatter.class || apiClass == Consumer.class;
-        printLoggerError("Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
     }
 
     protected enum ReservedLevel implements Level {
@@ -200,6 +194,25 @@ public abstract class AbstractLogger implements Logger {
         @Override
         public boolean isError() {
             return error;
+        }
+    }
+
+    protected static abstract class Error {
+        private final String message;
+
+        protected Error(String message) {
+            this.message = message;
+        }
+
+        public void print() {
+            System.err.println("[Logger] " + message);
+        }
+    }
+
+    private static final class PipelineError extends Error {
+        private PipelineError(Class<?> apiClass, Object implObject) {
+            super("Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
+            assert apiClass == Filter.class || apiClass == Formatter.class || apiClass == Consumer.class;
         }
     }
 }

@@ -96,10 +96,6 @@ public final class AsynchronousLogger extends PipelineLogger {
         queue.add(entry);
     }
 
-    private static void printThreadInterruptedError() {
-        printLoggerError(Thread.currentThread().getName() + " thread was interrupted.");
-    }
-
     private static void joinAll(Stream<Future<?>> futures) throws InterruptedException, ExecutionException {
         for (Future<?> future : futures.collect(Collectors.toSet())) {
             future.get();
@@ -126,7 +122,8 @@ public final class AsynchronousLogger extends PipelineLogger {
                     }
                 }
             } catch (InterruptedException e) {
-                printThreadInterruptedError();
+                Error error = new ThreadInterruptedError();
+                error.print();
                 e.printStackTrace();
             } finally {
                 executor.shutdown();
@@ -148,7 +145,8 @@ public final class AsynchronousLogger extends PipelineLogger {
                     }
                 }
             } catch (InterruptedException e) {
-                printThreadInterruptedError();
+                Error error = new ThreadInterruptedError();
+                error.print();
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
@@ -201,6 +199,12 @@ public final class AsynchronousLogger extends PipelineLogger {
             joinAll(pipeline.getConsumers().stream()
                     .map(consumer -> (Runnable) () -> doConsume(consumer, entry, formattedEntry.get()))
                     .map(executor::submit));
+        }
+    }
+
+    private static final class ThreadInterruptedError extends Error {
+        private ThreadInterruptedError() {
+            super(Thread.currentThread().getName() + " thread was interrupted.");
         }
     }
 }

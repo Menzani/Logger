@@ -41,6 +41,15 @@ public abstract class PipelineLogger extends ToggleableNamedLogger {
         return this;
     }
 
+    public PipelineLogger profiled() {
+        return profiled(profilerBuilder()
+                .withLabel(getName().orElse(getClass().getSimpleName())));
+    }
+
+    public PipelineLogger profiled(ProfiledLogger.ProfilerBuilder profilerBuilder) {
+        return new ProfiledLogger(profilerBuilder.withLogger(this));
+    }
+
     @Override
     public PipelineLogger clone() {
         PipelineLogger clone = newInstance();
@@ -51,4 +60,8 @@ public abstract class PipelineLogger extends ToggleableNamedLogger {
     }
 
     protected abstract PipelineLogger newInstance();
+
+    public static ProfiledLogger.ProfilerBuilder profilerBuilder() {
+        return new ProfiledLogger.ProfilerBuilder();
+    }
 }

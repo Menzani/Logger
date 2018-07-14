@@ -1,8 +1,10 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.Profiler;
 import it.menzani.logger.api.Filter;
 import it.menzani.logger.api.Formatter;
 import it.menzani.logger.api.PipelineLogger;
+import it.menzani.logger.api.ProfiledLogger;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -13,6 +15,7 @@ import java.util.stream.Stream;
 
 public final class AsynchronousLogger extends PipelineLogger {
     private volatile ExecutorService executor;
+    private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
     private final Object queueMonitor = new Object();
 
@@ -37,7 +40,8 @@ public final class AsynchronousLogger extends PipelineLogger {
             executor.shutdown();
         }
         executor = Executors.newFixedThreadPool(parallelism, threadManager);
-        executor.execute(new Consumer());
+        Runnable consumer = profilerBuilder == null ? new Consumer() : new ProfiledConsumer();
+        executor.execute(consumer);
         return this;
     }
 
@@ -81,6 +85,18 @@ public final class AsynchronousLogger extends PipelineLogger {
     @Override
     public AsynchronousLogger addPipeline(Pipeline pipeline) {
         super.addPipeline(pipeline);
+        return this;
+    }
+
+    @Override
+    public AsynchronousLogger profiled() {
+        super.profiled();
+        return this;
+    }
+
+    @Override
+    public AsynchronousLogger profiled(ProfiledLogger.ProfilerBuilder profilerBuilder) {
+        this.profilerBuilder = profilerBuilder.withLogger(this).lock();
         return this;
     }
 
@@ -134,15 +150,13 @@ public final class AsynchronousLogger extends PipelineLogger {
         }
     }
 
-    private final class Consumer implements Runnable {
+    private class Consumer implements Runnable {
         @Override
         public void run() {
             try {
                 while (true) {
                     LogEntry entry = queue.take();
-                    joinAll(getPipelines().stream()
-                            .map(pipeline -> new PipelineConsumer(pipeline, entry))
-                            .map(executor::submit));
+                    consume(entry);
                     synchronized (queueMonitor) {
                         queueMonitor.notifyAll();
                     }
@@ -157,6 +171,21 @@ public final class AsynchronousLogger extends PipelineLogger {
                     cause = cause.getCause();
                 }
                 cause.printStackTrace();
+            }
+        }
+
+        protected void consume(LogEntry entry) throws InterruptedException, ExecutionException {
+            joinAll(getPipelines().stream()
+                    .map(pipeline -> new PipelineConsumer(pipeline, entry))
+                    .map(executor::submit));
+        }
+    }
+
+    private final class ProfiledConsumer extends Consumer {
+        @Override
+        protected void consume(LogEntry entry) throws InterruptedException, ExecutionException {
+            try (Profiler ignored = profilerBuilder.build()) {
+                super.consume(entry);
             }
         }
     }

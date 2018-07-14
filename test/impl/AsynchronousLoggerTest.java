@@ -31,12 +31,12 @@ class AsynchronousLoggerTest extends AbstractLoggerTest {
     static Stream<Arguments> defaultParallelism() {
         return Stream.of(
                 /* [1] */ Arguments.of(arrayOf(), 1),
-                /* [2] */ Arguments.of(arrayOf(new Pipeline()), 2),
+                /* [2] */ Arguments.of(arrayOf(new Pipeline()), 3),
                 /* [3] */ Arguments.of(arrayOf(new Pipeline().addFilter(Filter.instance)), 3),
                 /* [4] */ Arguments.of(arrayOf(new Pipeline().addFilter(Filter.instance).addFilter(Filter.instance)), 4),
                 /* [5] */ Arguments.of(arrayOf(new Pipeline().addFilter(Filter.instance).addConsumer(Consumer.instance)), 3),
                 /* [6] */ Arguments.of(arrayOf(new Pipeline().addFilter(Filter.instance).addConsumer(Consumer.instance).addConsumer(Consumer.instance)), 4),
-                /* [7] */ Arguments.of(arrayOf(new Pipeline(), new Pipeline()), 3),
+                /* [7] */ Arguments.of(arrayOf(new Pipeline(), new Pipeline()), 4),
                 /* [8] */ Arguments.of(arrayOf(new Pipeline(), new Pipeline().addFilter(Filter.instance)), 4),
                 /* [9] */ Arguments.of(arrayOf(new Pipeline(), new Pipeline().addFilter(Filter.instance).addFilter(Filter.instance)), 5),
                 /* [10] */ Arguments.of(arrayOf(new Pipeline(), new Pipeline().addFilter(Filter.instance).addConsumer(Consumer.instance)), 4),

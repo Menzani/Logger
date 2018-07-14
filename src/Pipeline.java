@@ -117,6 +117,7 @@ public final class Pipeline implements Named, Toggleable, Cloneable<Pipeline> {
 
     @Override
     public String toString() {
-        return getName().orElse("") + "{" + filters.size() + " -> " + consumers.size() + "}";
+        return getName().orElse("") + "{" +
+                filters.size() + " -> " + producer + " -> " + consumers.size() + "}";
     }
 }

@@ -61,11 +61,15 @@ public final class AsynchronousLogger extends PipelineLogger {
 
     private int defaultParallelism() {
         Set<Pipeline> pipelines = getPipelines();
-        OptionalInt maxElements = Stream.concat(
+        OptionalInt maxElements = Stream.of(
                 pipelines.stream()
                         .map(Pipeline::getFilters),
                 pipelines.stream()
+                        .map(Pipeline::getProducer)
+                        .map(Producer::getFormatters),
+                pipelines.stream()
                         .map(Pipeline::getConsumers))
+                .flatMap(Function.identity())
                 .mapToInt(Set::size)
                 .max();
         return 1 + pipelines.size() + maxElements.orElse(0);

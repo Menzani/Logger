@@ -34,4 +34,9 @@ public final class Producer {
         }
         return builder.toString();
     }
+
+    @Override
+    public String toString() {
+        return formatters.size() + "+" + (elements.size() - formatters.size());
+    }
 }

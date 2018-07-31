@@ -167,8 +167,9 @@ public abstract class AbstractLogger implements Logger {
             this.message = message;
         }
 
-        public void print() {
+        public void print(Exception e) {
             System.err.println("[Logger] " + message);
+            e.printStackTrace();
         }
     }
 

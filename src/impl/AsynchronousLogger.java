@@ -142,8 +142,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                 }
             } catch (InterruptedException e) {
                 Error error = new ThreadInterruptedError();
-                error.print();
-                e.printStackTrace();
+                error.print(e);
             } finally {
                 executor.shutdown();
             }
@@ -163,8 +162,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                 }
             } catch (InterruptedException e) {
                 Error error = new ThreadInterruptedError();
-                error.print();
-                e.printStackTrace();
+                error.print(e);
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof ExecutionException) {

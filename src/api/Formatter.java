@@ -17,8 +17,7 @@ public interface Formatter extends BiFunction<LogEntry, Logger, Optional<String>
             logger.throwable(AbstractLogger.ReservedLevel.LOGGER, e.getCause(), message);
         } catch (Exception e) {
             AbstractLogger.Error error = new AbstractLogger.PipelineError(Formatter.class, this);
-            error.print();
-            e.printStackTrace();
+            error.print(e);
         }
         return Optional.empty();
     }

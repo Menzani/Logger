@@ -232,7 +232,7 @@ public final class AsynchronousLogger extends PipelineLogger {
             Future<?>[] futures = new Future<?>[components.size()];
             int i = 0;
             for (T component : components) {
-                assert Filter.class.isInstance(component) || Formatter.class.isInstance(component);
+                assert component instanceof Filter || component instanceof Formatter;
                 Future<V> future = completion.submit(callableFactory.apply(component));
                 futures[i++] = future;
             }

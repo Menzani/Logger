@@ -18,9 +18,9 @@ public abstract class AbstractLoggerTest {
         consumer = new BufferConsumer();
         logger = newLogger(new Pipeline()
                 .setProducer(new Producer()
-                        .append("[")
+                        .append('[')
                         .append(new TimestampFormatter())
-                        .append(" ")
+                        .append(' ')
                         .append(new LevelFormatter())
                         .append("] ")
                         .append(new MessageFormatter()))

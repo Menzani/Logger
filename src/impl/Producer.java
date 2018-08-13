@@ -23,13 +23,22 @@ public final class Producer {
         return this;
     }
 
+    public Producer append(Character character) {
+        fragments.add(character);
+        return this;
+    }
+
     public String produce(Map<Formatter, String> formattedFragments) {
         StringBuilder builder = new StringBuilder();
         for (Object fragment : fragments) {
             if (fragment instanceof Formatter) {
                 builder.append(formattedFragments.get(fragment));
-            } else {
+            } else if (fragment instanceof CharSequence) {
                 builder.append((CharSequence) fragment);
+            } else if (fragment instanceof Character) {
+                builder.append((char) fragment);
+            } else {
+                throw new AssertionError();
             }
         }
         return builder.toString();

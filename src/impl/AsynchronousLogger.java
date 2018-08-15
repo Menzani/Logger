@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 public final class AsynchronousLogger extends PipelineLogger {
     private volatile ExecutorService executor;
+    private volatile ThreadManager threadManager;
     private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
@@ -31,14 +32,15 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     public AsynchronousLogger setParallelism(int parallelism) {
-        Consumer consumer = profilerBuilder == null ? new Consumer() : new ProfiledConsumer();
-        ThreadManager threadManager = new ThreadManager(consumer);
-        if (executor == null) {
-            Runtime.getRuntime()
-                    .addShutdownHook(new Thread(threadManager, "AsynchronousLogger shutdown"));
-        } else {
-            executor.shutdown();
+        Runtime runtime = Runtime.getRuntime();
+        if (executor != null) {
+            threadManager.run();
+            boolean wasRegistered = runtime.removeShutdownHook(threadManager);
+            assert wasRegistered;
         }
+        Consumer consumer = profilerBuilder == null ? new Consumer() : new ProfiledConsumer(profilerBuilder);
+        threadManager = new ThreadManager(consumer);
+        runtime.addShutdownHook(threadManager);
         executor = Executors.newFixedThreadPool(parallelism, threadManager);
         executor.execute(consumer);
         return this;
@@ -120,11 +122,12 @@ public final class AsynchronousLogger extends PipelineLogger {
         }
     }
 
-    private final class ThreadManager implements ThreadFactory, Runnable {
+    private final class ThreadManager extends Thread implements ThreadFactory {
         private final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
         private final Consumer consumer;
 
         private ThreadManager(Consumer consumer) {
+            super("AsynchronousLogger shutdown");
             this.consumer = consumer;
         }
 
@@ -188,6 +191,12 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     private final class ProfiledConsumer extends Consumer {
+        private final ProfiledLogger.ProfilerBuilder profilerBuilder;
+
+        private ProfiledConsumer(ProfiledLogger.ProfilerBuilder profilerBuilder) {
+            this.profilerBuilder = profilerBuilder;
+        }
+
         @Override
         protected void consume(LogEntry entry) throws InterruptedException, ExecutionException {
             try (Profiler ignored = profilerBuilder.build()) {

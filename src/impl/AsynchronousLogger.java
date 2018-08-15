@@ -17,7 +17,6 @@ public final class AsynchronousLogger extends PipelineLogger {
     private volatile ExecutorService executor;
     private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
-    private final Object queueMonitor = new Object();
 
     public AsynchronousLogger() {
         super();
@@ -32,7 +31,8 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     public AsynchronousLogger setParallelism(int parallelism) {
-        ThreadManager threadManager = new ThreadManager();
+        Consumer consumer = profilerBuilder == null ? new Consumer() : new ProfiledConsumer();
+        ThreadManager threadManager = new ThreadManager(consumer);
         if (executor == null) {
             Runtime.getRuntime()
                     .addShutdownHook(new Thread(threadManager, "AsynchronousLogger shutdown"));
@@ -40,7 +40,6 @@ public final class AsynchronousLogger extends PipelineLogger {
             executor.shutdown();
         }
         executor = Executors.newFixedThreadPool(parallelism, threadManager);
-        Runnable consumer = profilerBuilder == null ? new Consumer() : new ProfiledConsumer();
         executor.execute(consumer);
         return this;
     }
@@ -123,6 +122,11 @@ public final class AsynchronousLogger extends PipelineLogger {
 
     private final class ThreadManager implements ThreadFactory, Runnable {
         private final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+        private final Consumer consumer;
+
+        private ThreadManager(Consumer consumer) {
+            this.consumer = consumer;
+        }
 
         @Override
         public Thread newThread(Runnable r) {
@@ -135,11 +139,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         @Override
         public void run() {
             try {
-                synchronized (queueMonitor) {
-                    while (!queue.isEmpty()) {
-                        queueMonitor.wait();
-                    }
-                }
+                consumer.awaitTermination();
             } catch (InterruptedException e) {
                 Error error = new ThreadInterruptedError();
                 error.print(e);
@@ -150,15 +150,16 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     private class Consumer implements Runnable {
+        private volatile boolean running = true;
+        private final CountDownLatch terminationLatch = new CountDownLatch(1);
+
         @Override
         public void run() {
             try {
-                while (true) {
-                    LogEntry entry = queue.take();
+                while (running || !queue.isEmpty()) {
+                    LogEntry entry = queue.poll(100, TimeUnit.MILLISECONDS);
+                    if (entry == null) continue;
                     consume(entry);
-                    synchronized (queueMonitor) {
-                        queueMonitor.notifyAll();
-                    }
                 }
             } catch (InterruptedException e) {
                 Error error = new ThreadInterruptedError();
@@ -169,6 +170,8 @@ public final class AsynchronousLogger extends PipelineLogger {
                     cause = cause.getCause();
                 }
                 cause.printStackTrace();
+            } finally {
+                terminationLatch.countDown();
             }
         }
 
@@ -176,6 +179,11 @@ public final class AsynchronousLogger extends PipelineLogger {
             joinAll(getPipelines().stream()
                     .map(pipeline -> new PipelineConsumer(pipeline, entry))
                     .map(executor::submit));
+        }
+
+        private void awaitTermination() throws InterruptedException {
+            running = false;
+            terminationLatch.await();
         }
     }
 

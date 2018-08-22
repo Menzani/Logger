@@ -39,7 +39,7 @@ public final class SynchronousLogger extends PipelineLogger {
                     .collect(Collectors.toMap(Function.identity(), formatter -> formatter.apply(logEntry, this)));
             if (!formattedFragments.values().stream()
                     .allMatch(Optional::isPresent)) continue;
-            String formattedEntry = producer.produce(
+            String formattedEntry = doProduce(producer,
                     formattedFragments.entrySet().stream()
                             .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
                                 Optional<String> formattedFragment = entry.getValue();

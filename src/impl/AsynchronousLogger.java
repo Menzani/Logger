@@ -236,7 +236,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                         return false;
                     });
             if (failure) return;
-            String formattedEntry = producer.produce(formattedFragments);
+            String formattedEntry = doProduce(producer, formattedFragments);
 
             joinAll(pipeline.getConsumers().stream()
                     .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry))

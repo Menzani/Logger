@@ -8,6 +8,10 @@ public final class Producer {
     private final List<Object> fragments = new ArrayList<>();
     private final Set<Formatter> formatters = new HashSet<>();
 
+    public List<Object> getFragments() {
+        return Collections.unmodifiableList(fragments);
+    }
+
     public Set<Formatter> getFormatters() {
         return Collections.unmodifiableSet(formatters);
     }
@@ -26,22 +30,6 @@ public final class Producer {
     public Producer append(Character character) {
         fragments.add(character);
         return this;
-    }
-
-    public String produce(Map<Formatter, String> formattedFragments) {
-        StringBuilder builder = new StringBuilder();
-        for (Object fragment : fragments) {
-            if (fragment instanceof Formatter) {
-                builder.append(formattedFragments.get(fragment));
-            } else if (fragment instanceof CharSequence) {
-                builder.append((CharSequence) fragment);
-            } else if (fragment instanceof Character) {
-                builder.append((char) fragment);
-            } else {
-                throw new AssertionError();
-            }
-        }
-        return builder.toString();
     }
 
     @Override

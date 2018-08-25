@@ -167,7 +167,8 @@ public final class AsynchronousLogger extends PipelineLogger {
                     consume(entry);
                 }
             } catch (InterruptedException e) {
-                Error error = new ThreadInterruptedError();
+                ThreadInterruptedError error = new ThreadInterruptedError();
+                error.resetInterruptStatus();
                 error.print(e);
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
@@ -271,8 +272,19 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     private static final class ThreadInterruptedError extends Error {
+        private final Thread thread;
+
         private ThreadInterruptedError() {
-            super(Thread.currentThread().getName() + " thread was interrupted.");
+            this(Thread.currentThread());
+        }
+
+        private ThreadInterruptedError(Thread thread) {
+            super(thread.getName() + " thread was interrupted.");
+            this.thread = thread;
+        }
+
+        private void resetInterruptStatus() {
+            thread.interrupt();
         }
     }
 }

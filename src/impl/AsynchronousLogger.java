@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 public final class AsynchronousLogger extends PipelineLogger {
     private volatile ExecutorService executor;
-    private volatile ThreadManager threadManager;
+    private ThreadManager threadManager;
     private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
@@ -31,7 +31,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         return ((ThreadPoolExecutor) executor).getCorePoolSize();
     }
 
-    public AsynchronousLogger setParallelism(int parallelism) {
+    public synchronized AsynchronousLogger setParallelism(int parallelism) {
         Runtime runtime = Runtime.getRuntime();
         if (executor != null) {
             threadManager.run();
@@ -47,12 +47,14 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     public AsynchronousLogger setDefaultParallelism(boolean log) {
-        setDefaultParallelism();
-        if (log) {
-            log(ReservedLevel.LOGGER, "Parallelism of AsynchronousLogger " +
-                    getName().map(name -> '\'' + name + "' ").orElse("") +
-                    "set to " + getParallelism());
+        int parallelism;
+        synchronized (this) {
+            setDefaultParallelism();
+            parallelism = getParallelism();
         }
+        if (log) log(ReservedLevel.LOGGER, "Parallelism of AsynchronousLogger " +
+                getName().map(name -> '\'' + name + "' ").orElse("") +
+                "set to " + parallelism);
         return this;
     }
 

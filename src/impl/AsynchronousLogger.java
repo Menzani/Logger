@@ -70,7 +70,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                         .map(Pipeline::getFilters),
                 pipelines.stream()
                         .map(Pipeline::getProducer)
-                        .map(Producer::getFormatters),
+                        .map(ProducerView::getFormatters),
                 pipelines.stream()
                         .map(Pipeline::getConsumers))
                 .flatMap(Function.identity())
@@ -227,7 +227,7 @@ public final class AsynchronousLogger extends PipelineLogger {
             boolean failure = joinAny(pipeline.getFilters(), filter -> () -> filter.test(entry), Boolean::booleanValue);
             if (failure) return;
 
-            Producer producer = pipeline.getProducer();
+            ProducerView producer = pipeline.getProducer();
             Map<Formatter, String> formattedFragments = new HashMap<>();
             failure = joinAny(producer.getFormatters(),
                     formatter -> () -> new AbstractMap.SimpleImmutableEntry<>(
@@ -239,7 +239,7 @@ public final class AsynchronousLogger extends PipelineLogger {
                         return false;
                     });
             if (failure) return;
-            String formattedEntry = doProduce(producer, formattedFragments);
+            String formattedEntry = producer.produce(formattedFragments);
 
             joinAll(pipeline.getConsumers().stream()
                     .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry))

@@ -1,13 +1,11 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.impl.LogEntry;
-import it.menzani.logger.impl.Producer;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
 
 public abstract class AbstractLogger implements Logger {
     @Override
@@ -131,22 +129,6 @@ public abstract class AbstractLogger implements Logger {
         Writer writer = new StringWriter();
         t.printStackTrace(new PrintWriter(writer));
         return writer.toString();
-    }
-
-    protected static String doProduce(Producer producer, Map<Formatter, String> formattedFragments) {
-        StringBuilder builder = new StringBuilder();
-        for (Object fragment : producer.getFragments()) {
-            if (fragment instanceof Formatter) {
-                builder.append(formattedFragments.get(fragment));
-            } else if (fragment instanceof CharSequence) {
-                builder.append((CharSequence) fragment);
-            } else if (fragment instanceof Character) {
-                builder.append((char) fragment);
-            } else {
-                throw new AssertionError();
-            }
-        }
-        return builder.toString();
     }
 
     protected enum ReservedLevel implements Level {

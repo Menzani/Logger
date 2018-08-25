@@ -8,14 +8,6 @@ public final class Producer {
     private final List<Object> fragments = new ArrayList<>();
     private final Set<Formatter> formatters = new HashSet<>();
 
-    public List<Object> getFragments() {
-        return Collections.unmodifiableList(fragments);
-    }
-
-    public Set<Formatter> getFormatters() {
-        return Collections.unmodifiableSet(formatters);
-    }
-
     public Producer append(Formatter formatter) {
         fragments.add(formatter);
         formatters.add(formatter);
@@ -32,8 +24,7 @@ public final class Producer {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return formatters.size() + "+" + (fragments.size() - formatters.size());
+    ProducerView asView() {
+        return new ProducerView(fragments, formatters);
     }
 }

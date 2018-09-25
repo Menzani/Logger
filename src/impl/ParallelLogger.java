@@ -13,17 +13,17 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class AsynchronousLogger extends PipelineLogger {
+public final class ParallelLogger extends PipelineLogger {
     private volatile ExecutorService executor;
     private ThreadManager threadManager;
     private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
-    public AsynchronousLogger() {
+    public ParallelLogger() {
         super();
     }
 
-    public AsynchronousLogger(String name) {
+    public ParallelLogger(String name) {
         super(name);
     }
 
@@ -31,7 +31,7 @@ public final class AsynchronousLogger extends PipelineLogger {
         return ((ThreadPoolExecutor) executor).getCorePoolSize();
     }
 
-    public synchronized AsynchronousLogger setParallelism(int parallelism) {
+    public synchronized ParallelLogger setParallelism(int parallelism) {
         Runtime runtime = Runtime.getRuntime();
         if (executor != null) {
             threadManager.run();
@@ -46,19 +46,19 @@ public final class AsynchronousLogger extends PipelineLogger {
         return this;
     }
 
-    public AsynchronousLogger setDefaultParallelism(boolean log) {
+    public ParallelLogger setDefaultParallelism(boolean log) {
         int parallelism;
         synchronized (this) {
             setDefaultParallelism();
             parallelism = getParallelism();
         }
-        if (log) log(ReservedLevel.LOGGER, "Parallelism of AsynchronousLogger " +
+        if (log) log(ReservedLevel.LOGGER, "Parallelism of ParallelLogger " +
                 getName().map(name -> '\'' + name + "' ").orElse("") +
                 "set to " + parallelism);
         return this;
     }
 
-    public AsynchronousLogger setDefaultParallelism() {
+    public ParallelLogger setDefaultParallelism() {
         setParallelism(defaultParallelism());
         return this;
     }
@@ -80,37 +80,37 @@ public final class AsynchronousLogger extends PipelineLogger {
     }
 
     @Override
-    public AsynchronousLogger setPipelines(Pipeline... pipelines) {
+    public ParallelLogger setPipelines(Pipeline... pipelines) {
         super.setPipelines(pipelines);
         return this;
     }
 
     @Override
-    public AsynchronousLogger addPipeline(Pipeline pipeline) {
+    public ParallelLogger addPipeline(Pipeline pipeline) {
         super.addPipeline(pipeline);
         return this;
     }
 
     @Override
-    public AsynchronousLogger profiled() {
+    public ParallelLogger profiled() {
         super.profiled();
         return this;
     }
 
     @Override
-    public AsynchronousLogger profiled(ProfiledLogger.ProfilerBuilder profilerBuilder) {
+    public ParallelLogger profiled(ProfiledLogger.ProfilerBuilder profilerBuilder) {
         this.profilerBuilder = profilerBuilder.withLogger(this).lock();
         return this;
     }
 
     @Override
-    public AsynchronousLogger clone() {
-        return (AsynchronousLogger) super.clone();
+    public ParallelLogger clone() {
+        return (ParallelLogger) super.clone();
     }
 
     @Override
-    protected AsynchronousLogger newInstance() {
-        return new AsynchronousLogger(getName().orElse(null));
+    protected ParallelLogger newInstance() {
+        return new ParallelLogger(getName().orElse(null));
     }
 
     @Override
@@ -129,14 +129,14 @@ public final class AsynchronousLogger extends PipelineLogger {
         private final Consumer consumer;
 
         private ThreadManager(Consumer consumer) {
-            super("AsynchronousLogger shutdown");
+            super("ParallelLogger shutdown");
             this.consumer = consumer;
         }
 
         @Override
         public Thread newThread(Runnable r) {
             Thread thread = defaultFactory.newThread(r);
-            thread.setName("AsynchronousLogger daemon");
+            thread.setName("ParallelLogger daemon");
             thread.setDaemon(true);
             return thread;
         }
@@ -231,7 +231,7 @@ public final class AsynchronousLogger extends PipelineLogger {
             Map<Formatter, String> formattedFragments = new HashMap<>();
             failure = joinAny(producer.getFormatters(),
                     formatter -> () -> new AbstractMap.SimpleImmutableEntry<>(
-                            formatter, formatter.apply(entry, AsynchronousLogger.this)),
+                            formatter, formatter.apply(entry, ParallelLogger.this)),
                     entry -> {
                         Optional<String> formattedFragment = entry.getValue();
                         if (!formattedFragment.isPresent()) return true;

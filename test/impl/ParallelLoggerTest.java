@@ -9,10 +9,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AsynchronousLoggerTest extends AbstractLoggerTest {
+class ParallelLoggerTest extends AbstractLoggerTest {
     @Override
-    protected AsynchronousLogger newLogger(Pipeline pipeline) {
-        return new AsynchronousLogger()
+    protected ParallelLogger newLogger(Pipeline pipeline) {
+        return new ParallelLogger()
                 .addPipeline(pipeline)
                 .setDefaultParallelism();
     }
@@ -20,7 +20,7 @@ class AsynchronousLoggerTest extends AbstractLoggerTest {
     @ParameterizedTest
     @MethodSource
     void defaultParallelism(Pipeline[] pipelines, int expectedParallelism) {
-        AsynchronousLogger logger = new AsynchronousLogger()
+        ParallelLogger logger = new ParallelLogger()
                 .setPipelines(pipelines)
                 .setDefaultParallelism();
         assertEquals(expectedParallelism, logger.getParallelism());

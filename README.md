@@ -8,6 +8,17 @@
 - Do work in parallel
 - Thread-safety is provided out-of-the-box and required by all contracts.
 
+## Download
+
+JAR bundles containing the source code are available for download in the *Releases* section of this repository.
+
+Java 8 is supported.  
+Backwards compatibility is not guaranteed between major releases.
+
+The rest of this document applies to the latest revision of version **1**.
+
+---
+
 ## Package structure
 
 Domain-specific classes can be found in two packages:

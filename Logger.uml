@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>it.menzani.logger</OriginalElement>
+  <nodes>
+    <node x="0.0" y="655.0">it.menzani.logger.Lazy.Initializer</node>
+    <node x="702.0" y="810.0">it.menzani.logger.Profiler</node>
+    <node x="504.25" y="810.0">it.menzani.logger.api.Filter</node>
+    <node x="866.25" y="655.0">it.menzani.logger.impl.LevelFormatter</node>
+    <node x="337.0" y="965.0">it.menzani.logger.impl.Producer</node>
+    <node x="0.0" y="890.0">it.menzani.logger.impl.StandardLevel</node>
+    <node x="238.1875" y="575.0">it.menzani.logger.Lazy</node>
+    <node x="340.375" y="420.0">it.menzani.logger.api.AbstractLogger.Error</node>
+    <node x="808.0" y="810.0">it.menzani.logger.Builder</node>
+    <node x="334.375" y="100.0">it.menzani.logger.api.Logger</node>
+    <node x="478.0" y="965.0">it.menzani.logger.impl.LogEntry</node>
+    <node x="154.5438596491228" y="500.0">it.menzani.logger.impl.ParallelLogger.ThreadInterruptedError</node>
+    <node x="160.5" y="810.0">it.menzani.logger.api.Level</node>
+    <node x="416.0" y="890.0">it.menzani.logger.impl.RejectAllFilter</node>
+    <node x="686.25" y="655.0">it.menzani.logger.impl.TimestampFormatter</node>
+    <node x="158.25" y="735.0">it.menzani.logger.impl.BufferConsumer</node>
+    <node x="879.75" y="575.0">it.menzani.logger.api.Formatter</node>
+    <node x="137.7938596491228" y="260.0">it.menzani.logger.api.ToggleableNamedLogger</node>
+    <node x="1013.25" y="655.0">it.menzani.logger.impl.MessageFormatter</node>
+    <node x="142.0" y="890.0">it.menzani.logger.api.Level.Comparator</node>
+    <node x="0.0" y="420.0">it.menzani.logger.impl.ParallelLogger</node>
+    <node x="274.0" y="890.0">it.menzani.logger.api.Level.Verbosity</node>
+    <node x="175.0" y="965.0">it.menzani.logger.api.LazyMessage</node>
+    <node x="727.25" y="735.0">it.menzani.logger.impl.TimestampFormatter.Clock</node>
+    <node x="77.25" y="340.0">it.menzani.logger.api.PipelineLogger</node>
+    <node x="224.25" y="340.0">it.menzani.logger.impl.LoggerGroup</node>
+    <node x="479.25" y="735.0">it.menzani.logger.impl.JavaLoggerConsumer</node>
+    <node x="468.3333333333333" y="100.0">it.menzani.logger.impl.Pipeline</node>
+    <node x="254.5" y="655.0">it.menzani.logger.api.Consumer</node>
+    <node x="556.0" y="890.0">it.menzani.logger.impl.LevelFilter</node>
+    <node x="143.0" y="420.0">it.menzani.logger.impl.SynchronousLogger</node>
+    <node x="313.25" y="735.0">it.menzani.logger.impl.ConsoleConsumer</node>
+    <node x="511.3333333333333" y="0.0">it.menzani.logger.api.Cloneable</node>
+    <node x="938.0" y="810.0">it.menzani.logger.impl.EvaluationException</node>
+    <node x="394.5438596491228" y="500.0">it.menzani.logger.api.AbstractLogger.PipelineError</node>
+    <node x="0.0" y="965.0">it.menzani.logger.api.CloneException</node>
+    <node x="17.25" y="735.0">it.menzani.logger.impl.FileConsumer</node>
+    <node x="377.5" y="655.0">it.menzani.logger.AtomicLazy</node>
+    <node x="401.9583333333333" y="0.0">it.menzani.logger.api.Named</node>
+    <node x="312.375" y="180.0">it.menzani.logger.api.AbstractLogger</node>
+    <node x="755.25" y="890.0">it.menzani.logger.Profiler.Builder</node>
+    <node x="274.9583333333333" y="0.0">it.menzani.logger.api.Toggleable</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="it.menzani.logger.impl.SynchronousLogger" target="it.menzani.logger.api.PipelineLogger">
+      <point x="0.0" y="-15.0" />
+      <point x="220.0" y="395.0" />
+      <point x="172.5" y="395.0" />
+      <point x="31.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.AbstractLogger.PipelineError" target="it.menzani.logger.api.AbstractLogger">
+      <point x="28.75" y="-15.0" />
+      <point x="480.7938596491228" y="235.0" />
+      <point x="419.875" y="235.0" />
+      <point x="43.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.BufferConsumer" target="it.menzani.logger.api.Consumer">
+      <point x="0.0" y="-15.0" />
+      <point x="225.75" y="715.0" />
+      <point x="293.125" y="715.0" />
+      <point x="-12.875" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.AbstractLogger" target="it.menzani.logger.api.Logger">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.ParallelLogger.ThreadInterruptedError" target="it.menzani.logger.api.AbstractLogger.Error">
+      <point x="42.25" y="-15.0" />
+      <point x="281.2938596491228" y="475.0" />
+      <point x="358.625" y="475.0" />
+      <point x="-18.25" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.Lazy.Initializer" target="it.menzani.logger.Lazy">
+      <point x="0.0" y="-15.0" />
+      <point x="47.5" y="630.0" />
+      <point x="255.9375" y="630.0" />
+      <point x="-17.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.LoggerGroup" target="it.menzani.logger.api.ToggleableNamedLogger">
+      <point x="5.6843418860808015E-14" y="-15.0" />
+      <point x="283.25000000000006" y="315.0" />
+      <point x="275.0438596491228" y="315.0" />
+      <point x="45.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.Logger" target="it.menzani.logger.api.Named">
+      <point x="0.0" y="-15.0" />
+      <point x="376.875" y="70.0" />
+      <point x="423.7083333333333" y="70.0" />
+      <point x="-21.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.PipelineLogger" target="it.menzani.logger.api.ToggleableNamedLogger">
+      <point x="0.0" y="-15.0" />
+      <point x="140.75" y="315.0" />
+      <point x="183.5438596491228" y="315.0" />
+      <point x="-45.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.Logger" target="it.menzani.logger.api.Cloneable">
+      <point x="28.333333333333343" y="-15.0" />
+      <point x="405.2083333333333" y="80.0" />
+      <point x="536.5833333333333" y="80.0" />
+      <point x="-25.25" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.StandardLevel" target="it.menzani.logger.api.Level">
+      <point x="0.0" y="-15.0" />
+      <point x="61.0" y="865.0" />
+      <point x="173.0" y="865.0" />
+      <point x="-25.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.FileConsumer" target="it.menzani.logger.Lazy.Initializer">
+      <point x="-30.25" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.LevelFilter" target="it.menzani.logger.api.Filter">
+      <point x="0.0" y="-15.0" />
+      <point x="606.5" y="865.0" />
+      <point x="559.75" y="865.0" />
+      <point x="18.5" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.AbstractLogger.Error" target="it.menzani.logger.api.AbstractLogger">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.Logger" target="it.menzani.logger.api.Toggleable">
+      <point x="-28.33333333333333" y="-15.0" />
+      <point x="348.54166666666663" y="80.0" />
+      <point x="301.7083333333333" y="80.0" />
+      <point x="-26.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.Profiler.Builder" target="it.menzani.logger.Builder">
+      <point x="21.25" y="-15.0" />
+      <point x="819.0" y="865.0" />
+      <point x="850.5" y="865.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.ParallelLogger" target="it.menzani.logger.api.PipelineLogger">
+      <point x="0.0" y="-15.0" />
+      <point x="61.5" y="395.0" />
+      <point x="109.0" y="395.0" />
+      <point x="-31.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.Level.Verbosity" target="it.menzani.logger.api.Level">
+      <point x="0.0" y="-15.0" />
+      <point x="322.5" y="865.0" />
+      <point x="223.0" y="865.0" />
+      <point x="25.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.ParallelLogger.ThreadInterruptedError" target="it.menzani.logger.impl.ParallelLogger">
+      <point x="-42.25" y="-15.0" />
+      <point x="196.7938596491228" y="475.0" />
+      <point x="61.5" y="475.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.Pipeline" target="it.menzani.logger.api.Cloneable">
+      <point x="30.0" y="-15.0" />
+      <point x="543.3333333333333" y="80.0" />
+      <point x="587.0833333333333" y="80.0" />
+      <point x="25.25" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.TimestampFormatter.Clock" target="it.menzani.logger.impl.TimestampFormatter">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.ToggleableNamedLogger" target="it.menzani.logger.api.AbstractLogger">
+      <point x="0.0" y="-15.0" />
+      <point x="229.2938596491228" y="235.0" />
+      <point x="333.875" y="235.0" />
+      <point x="-43.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.FileConsumer" target="it.menzani.logger.api.Consumer">
+      <point x="30.25" y="-15.0" />
+      <point x="108.0" y="705.0" />
+      <point x="267.375" y="705.0" />
+      <point x="-38.625" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.Pipeline" target="it.menzani.logger.api.Named">
+      <point x="0.0" y="-15.0" />
+      <point x="513.3333333333333" y="50.0" />
+      <point x="467.2083333333333" y="50.0" />
+      <point x="21.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.AtomicLazy" target="it.menzani.logger.Lazy">
+      <point x="0.0" y="-15.0" />
+      <point x="432.5" y="630.0" />
+      <point x="291.4375" y="630.0" />
+      <point x="17.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.Pipeline" target="it.menzani.logger.api.Toggleable">
+      <point x="-30.0" y="-15.0" />
+      <point x="483.3333333333333" y="60.0" />
+      <point x="355.2083333333333" y="60.0" />
+      <point x="26.75" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.AbstractLogger.PipelineError" target="it.menzani.logger.api.AbstractLogger.Error">
+      <point x="-28.75" y="-15.0" />
+      <point x="423.2938596491228" y="475.0" />
+      <point x="395.125" y="475.0" />
+      <point x="18.25" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.Profiler.Builder" target="it.menzani.logger.Profiler">
+      <point x="-21.25" y="-15.0" />
+      <point x="776.5" y="865.0" />
+      <point x="745.0" y="865.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.LevelFormatter" target="it.menzani.logger.api.Formatter">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.MessageFormatter" target="it.menzani.logger.api.Formatter">
+      <point x="0.0" y="-15.0" />
+      <point x="1086.25" y="630.0" />
+      <point x="963.0833333333334" y="630.0" />
+      <point x="33.33333333333337" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.ConsoleConsumer" target="it.menzani.logger.api.Consumer">
+      <point x="0.0" y="-15.0" />
+      <point x="386.25" y="715.0" />
+      <point x="318.875" y="715.0" />
+      <point x="12.875" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.RejectAllFilter" target="it.menzani.logger.api.Filter">
+      <point x="0.0" y="-15.0" />
+      <point x="476.0" y="865.0" />
+      <point x="522.75" y="865.0" />
+      <point x="-18.5" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.TimestampFormatter" target="it.menzani.logger.api.Formatter">
+      <point x="0.0" y="-15.0" />
+      <point x="766.25" y="630.0" />
+      <point x="896.4166666666666" y="630.0" />
+      <point x="-33.33333333333334" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.api.Level.Comparator" target="it.menzani.logger.api.Level">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="it.menzani.logger.impl.JavaLoggerConsumer" target="it.menzani.logger.api.Consumer">
+      <point x="0.0" y="-15.0" />
+      <point x="560.25" y="705.0" />
+      <point x="344.625" y="705.0" />
+      <point x="38.625" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7193675889328063" x="588.0" y="531.6428571428571" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

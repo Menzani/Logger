@@ -34,9 +34,9 @@ Also, the `it.menzani.logger.api.Cloneable<T>` interface provides a straightforw
 
 ## Class hierarchy
 
-![](https://cdn.fmenza.it/image/Logger.png)
+![](Logger.png)
 
-<sub>[UML diagram](https://cdn.fmenza.it/download/Logger.uml)</sub>
+<sub>[UML diagram](Logger.uml)</sub>
 
 ## Tutorial
 

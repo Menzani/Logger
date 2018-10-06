@@ -11,7 +11,7 @@ public interface Consumer extends BiConsumer<LogEntry, String> {
         try {
             consume(entry, formattedEntry);
         } catch (Exception e) {
-            AbstractLogger.Error error = new AbstractLogger.PipelineError(Consumer.class, this);
+            AbstractLogger.Error error = new PipelineLogger.PipelineError(Consumer.class, this);
             error.print(e);
         }
     }

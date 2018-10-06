@@ -172,11 +172,4 @@ public abstract class AbstractLogger implements Logger {
             e.printStackTrace();
         }
     }
-
-    static final class PipelineError extends Error {
-        PipelineError(Class<?> apiClass, Object implObject) {
-            super("Could not pass log entry to " + apiClass.getSimpleName() + ": " + implObject.getClass().getName());
-            assert apiClass == Filter.class || apiClass == Formatter.class || apiClass == Consumer.class;
-        }
-    }
 }

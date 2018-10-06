@@ -11,7 +11,7 @@ public interface Filter extends Predicate<LogEntry> {
         try {
             return reject(entry);
         } catch (Exception e) {
-            AbstractLogger.Error error = new AbstractLogger.PipelineError(Filter.class, this);
+            AbstractLogger.Error error = new PipelineLogger.PipelineError(Filter.class, this);
             error.print(e);
             return true;
         }

@@ -1,6 +1,7 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.impl.LogEntry;
+import it.menzani.logger.impl.ParameterizedMessage;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.io.PrintWriter;
@@ -63,6 +64,64 @@ public abstract class AbstractLogger implements Logger {
     public void log(Level level, LazyMessage lazyMessage) {
         tryLog(new LogEntry(level, null, lazyMessage));
     }
+
+
+    @Override
+    public void trace(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.TRACE, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void debug(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.DEBUG, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void fine(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.FINE, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void info(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.INFORMATION, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void header(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.HEADER, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void warn(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.WARNING, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void fail(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.FAILURE, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void throwable(Throwable throwable, String parameterizedMessage, Object... arguments) {
+        throwable(StandardLevel.FAILURE, throwable, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void throwable(Level level, Throwable throwable, String parameterizedMessage, Object... arguments) {
+        log(level, parameterizedMessage, arguments);
+        log(level, () -> throwableToString(throwable));
+    }
+
+    @Override
+    public void fatal(String parameterizedMessage, Object... arguments) {
+        log(StandardLevel.FATAL, parameterizedMessage, arguments);
+    }
+
+    @Override
+    public void log(Level level, String parameterizedMessage, Object... arguments) {
+        log(level, new ParameterizedMessage(parameterizedMessage, arguments));
+    }
+
 
     @Override
     public void trace(Object message) {

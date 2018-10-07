@@ -58,7 +58,7 @@ public abstract class AbstractLoggerTest {
         logger.log(level, () -> { throw e; });
 
         String entry = consumer.nextEntry();
-        final String loggerMarker = AbstractLogger.ReservedLevel.LOGGER.getMarker();
+        final String loggerMarker = AbstractLogger.ReservedLevel.ERROR.getMarker();
         assertTrue(entry.contains(' ' + loggerMarker + "] "));
         assertTrue(entry.contains("Could not evaluate lazy message at level: " + level.getMarker()));
         entry = consumer.nextEntry();

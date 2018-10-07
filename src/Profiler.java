@@ -67,7 +67,7 @@ public final class Profiler implements AutoCloseable {
 
         public Builder withLevel(Level level) {
             checkLocked();
-            this.level = Objects.requireNonNull(level);
+            this.level = Objects.requireNonNull(level, "level");
             return this;
         }
 

@@ -14,7 +14,7 @@ public interface Formatter extends BiFunction<LogEntry, Logger, Optional<String>
             return Optional.ofNullable(format(entry));
         } catch (EvaluationException e) {
             Object message = "Could not evaluate lazy message at level: " + entry.getLevel().getMarker();
-            logger.throwable(AbstractLogger.ReservedLevel.LOGGER, e.getCause(), message);
+            logger.throwable(AbstractLogger.ReservedLevel.ERROR, e.getCause(), message);
         } catch (Exception e) {
             AbstractLogger.Error error = new PipelineLogger.PipelineError(Formatter.class, this);
             error.print(e);

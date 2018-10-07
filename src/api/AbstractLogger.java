@@ -191,7 +191,8 @@ public abstract class AbstractLogger implements Logger {
     }
 
     protected enum ReservedLevel implements Level {
-        LOGGER(-1, "LOGGER", false);
+        INFORMATION(-1, "LOGGER", false),
+        ERROR(-1, "LOGGER", true);
 
         private final int verbosity;
         private final String marker;

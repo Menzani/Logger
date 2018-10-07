@@ -15,9 +15,9 @@ public interface Logger extends Named, Toggleable, Cloneable<Logger> {
 
     void fail(LazyMessage lazyMessage);
 
-    void throwable(Throwable t, LazyMessage lazyMessage);
+    void throwable(Throwable throwable, LazyMessage lazyMessage);
 
-    void throwable(Level level, Throwable t, LazyMessage lazyMessage);
+    void throwable(Level level, Throwable throwable, LazyMessage lazyMessage);
 
     void fatal(LazyMessage lazyMessage);
 
@@ -61,9 +61,9 @@ public interface Logger extends Named, Toggleable, Cloneable<Logger> {
 
     void fail(Object message);
 
-    void throwable(Throwable t, Object message);
+    void throwable(Throwable throwable, Object message);
 
-    void throwable(Level level, Throwable t, Object message);
+    void throwable(Level level, Throwable throwable, Object message);
 
     void fatal(Object message);
 

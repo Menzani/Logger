@@ -45,14 +45,14 @@ public abstract class AbstractLogger implements Logger {
     }
 
     @Override
-    public void throwable(Throwable t, LazyMessage lazyMessage) {
-        throwable(StandardLevel.FAILURE, t, lazyMessage);
+    public void throwable(Throwable throwable, LazyMessage lazyMessage) {
+        throwable(StandardLevel.FAILURE, throwable, lazyMessage);
     }
 
     @Override
-    public void throwable(Level level, Throwable t, LazyMessage lazyMessage) {
+    public void throwable(Level level, Throwable throwable, LazyMessage lazyMessage) {
         log(level, lazyMessage);
-        log(level, () -> throwableToString(t));
+        log(level, () -> throwableToString(throwable));
     }
 
     @Override
@@ -159,14 +159,14 @@ public abstract class AbstractLogger implements Logger {
     }
 
     @Override
-    public void throwable(Throwable t, Object message) {
-        throwable(StandardLevel.FAILURE, t, message);
+    public void throwable(Throwable throwable, Object message) {
+        throwable(StandardLevel.FAILURE, throwable, message);
     }
 
     @Override
-    public void throwable(Level level, Throwable t, Object message) {
+    public void throwable(Level level, Throwable throwable, Object message) {
         log(level, message);
-        log(level, throwableToString(t));
+        log(level, throwableToString(throwable));
     }
 
     @Override
@@ -184,9 +184,9 @@ public abstract class AbstractLogger implements Logger {
     @Override
     public abstract AbstractLogger clone();
 
-    static String throwableToString(Throwable t) {
+    static String throwableToString(Throwable throwable) {
         Writer writer = new StringWriter();
-        t.printStackTrace(new PrintWriter(writer));
+        throwable.printStackTrace(new PrintWriter(writer));
         return writer.toString();
     }
 

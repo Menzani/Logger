@@ -9,13 +9,13 @@ import java.time.Duration;
 public final class Profiler implements AutoCloseable {
     private final Logger logger;
     private final Level level;
-    private final String label;
+    private final String format;
     private final long startTime;
 
-    private Profiler(Logger logger, Level level, String label) {
+    private Profiler(Logger logger, Level level, String format) {
         this.logger = logger;
         this.level = level;
-        this.label = label;
+        this.format = format;
         startTime = System.nanoTime();
     }
 
@@ -37,7 +37,7 @@ public final class Profiler implements AutoCloseable {
 
     public String toString(Duration duration) {
         String formatted = String.format("%ds %dms", duration.getSeconds() % 60, duration.getNano() / 1_000_000);
-        return label + " took " + formatted + " to complete.";
+        return format.replace("{}", formatted);
     }
 
     @Override
@@ -52,7 +52,7 @@ public final class Profiler implements AutoCloseable {
     public static class Builder implements it.menzani.logger.Builder<Profiler> {
         private Logger logger;
         private Level level = StandardLevel.DEBUG;
-        private String label;
+        private String format;
         private boolean locked;
 
         protected Builder() {
@@ -70,9 +70,9 @@ public final class Profiler implements AutoCloseable {
             return this;
         }
 
-        public Builder withLabel(String label) {
+        public Builder withFormat(String format) {
             checkLocked();
-            this.label = label;
+            this.format = format;
             return this;
         }
 
@@ -82,13 +82,13 @@ public final class Profiler implements AutoCloseable {
 
         @Override
         public void validate() {
-            if (label == null) throw it.menzani.logger.Builder.newValidationException("label");
+            if (format == null) throw it.menzani.logger.Builder.newValidationException("format");
         }
 
         @Override
         public Profiler build() {
             if (!locked) validate();
-            return new Profiler(logger, level, label);
+            return new Profiler(logger, level, format);
         }
 
         @Override

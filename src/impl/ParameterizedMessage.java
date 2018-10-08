@@ -43,12 +43,14 @@ public final class ParameterizedMessage implements LazyMessage {
             }
             Object argument = arguments[j++];
             if (argument == null) {
-                throw newProductionException("null argument");
+                throw newProductionException("placeholder argument not set");
             }
             if (argument instanceof LazyMessage) {
                 argument = ((LazyMessage) argument).evaluate();
             }
-            builder.replace(i, i + 2, argument.toString());
+            String replacement = argument.toString();
+            builder.replace(i, i + 2, replacement);
+            i += replacement.length();
         }
         if (j != arguments.length) {
             throw newProductionException("too many arguments");

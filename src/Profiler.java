@@ -5,7 +5,6 @@ import it.menzani.logger.api.Logger;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.time.Duration;
-import java.util.Objects;
 
 public final class Profiler implements AutoCloseable {
     private final Logger logger;
@@ -67,7 +66,7 @@ public final class Profiler implements AutoCloseable {
 
         public Builder withLevel(Level level) {
             checkLocked();
-            this.level = Objects.requireNonNull(level, "level");
+            this.level = Objects.objectNotNull(level, "level");
             return this;
         }
 

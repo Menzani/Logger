@@ -1,5 +1,6 @@
 package it.menzani.logger.api;
 
+import it.menzani.logger.Objects;
 import it.menzani.logger.impl.LogEntry;
 import it.menzani.logger.impl.ParameterizedMessage;
 import it.menzani.logger.impl.StandardLevel;
@@ -119,7 +120,7 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void log(Level level, String parameterizedMessage, Object... arguments) {
-        log(level, new ParameterizedMessage(parameterizedMessage, arguments));
+        log(level, new ParameterizedMessage(parameterizedMessage, Objects.contentNotNull(arguments, "arguments")));
     }
 
 

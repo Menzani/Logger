@@ -1,5 +1,7 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.Nullable;
+import it.menzani.logger.Objects;
 import it.menzani.logger.api.LazyMessage;
 
 public final class ParameterizedMessage implements LazyMessage {
@@ -7,24 +9,25 @@ public final class ParameterizedMessage implements LazyMessage {
     private final String parameterizedString;
     private final Object[] arguments;
 
-    public ParameterizedMessage(String parameterizedString, Object... arguments) {
-        this.parameterizedString = parameterizedString;
-        this.arguments = arguments;
+    public ParameterizedMessage(String parameterizedString, @Nullable Object... arguments) {
+        this.parameterizedString = Objects.objectNotNull(parameterizedString, "parameterizedString");
+        this.arguments = Objects.objectNotNull(arguments, "arguments");
     }
 
     public ParameterizedMessage marker(String marker) {
-        this.marker = marker;
+        this.marker = Objects.objectNotNull(marker, "marker");
         return this;
     }
 
     public ParameterizedMessage with(LazyMessage... arguments) {
+        Objects.objectNotNull(arguments, "arguments");
         int j = 0;
         for (int i = 0; i < this.arguments.length; i++) {
             if (this.arguments[i] == null) {
                 if (j == arguments.length) {
                     throw new IllegalArgumentException("Too few arguments.");
                 }
-                this.arguments[i] = arguments[j++];
+                this.arguments[i] = Objects.elementNotNull(arguments[j++], "arguments");
             }
         }
         if (j != arguments.length) {

@@ -14,14 +14,14 @@ class ParameterizedMessageTest {
     void oneArgument() throws Exception {
         UUID arg = UUID.randomUUID();
         message = new ParameterizedMessage("Hello {}!", arg);
-        assertEquals("Hello " + arg + '!', message.evaluate());
+        assertEquals("Hello " + arg + '!', message.evaluate().toString());
     }
 
     @Test
     void twoArguments() throws Exception {
         UUID arg0 = UUID.randomUUID(), arg1 = UUID.randomUUID();
         message = new ParameterizedMessage("Hello {} {}!", arg0, arg1);
-        assertEquals("Hello " + arg0 + ' ' + arg1 + '!', message.evaluate());
+        assertEquals("Hello " + arg0 + ' ' + arg1 + '!', message.evaluate().toString());
     }
 
     @Test
@@ -51,14 +51,14 @@ class ParameterizedMessageTest {
     void oneLazyArgument() throws Exception {
         UUID arg = UUID.randomUUID();
         message = new ParameterizedMessage("Hello {}!", (Object) null).with(() -> arg);
-        assertEquals("Hello " + arg + '!', message.evaluate());
+        assertEquals("Hello " + arg + '!', message.evaluate().toString());
     }
 
     @Test
     void twoLazyArguments() throws Exception {
         UUID arg0 = UUID.randomUUID(), arg1 = UUID.randomUUID();
         message = new ParameterizedMessage("Hello {} {}!", null, null).with(() -> arg0, () -> arg1);
-        assertEquals("Hello " + arg0 + ' ' + arg1 + '!', message.evaluate());
+        assertEquals("Hello " + arg0 + ' ' + arg1 + '!', message.evaluate().toString());
     }
 
     @Test

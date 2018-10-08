@@ -58,7 +58,7 @@ public final class ParameterizedMessage implements LazyMessage {
         if (j != arguments.length) {
             throw newProductionException("too many arguments");
         }
-        return builder.toString();
+        return builder;
     }
 
     private static RuntimeException newProductionException(String cause) {

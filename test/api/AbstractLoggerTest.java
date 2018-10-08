@@ -37,7 +37,7 @@ public abstract class AbstractLoggerTest {
 
         String entry = consumer.nextEntry();
         assertTrue(entry.contains(' ' + level.getMarker() + "] "));
-        assertTrue(entry.contains("] " + message.toString()));
+        assertTrue(entry.contains("] " + message));
     }
 
     @ParameterizedTest
@@ -48,7 +48,7 @@ public abstract class AbstractLoggerTest {
 
         String entry = consumer.nextEntry();
         assertTrue(entry.contains(' ' + level.getMarker() + "] "));
-        assertTrue(entry.contains("] " + message.toString()));
+        assertTrue(entry.contains("] " + message));
     }
 
     @ParameterizedTest
@@ -58,11 +58,48 @@ public abstract class AbstractLoggerTest {
         logger.log(level, () -> { throw e; });
 
         String entry = consumer.nextEntry();
-        final String loggerMarker = AbstractLogger.ReservedLevel.ERROR.getMarker();
-        assertTrue(entry.contains(' ' + loggerMarker + "] "));
-        assertTrue(entry.contains("Could not evaluate lazy message at level: " + level.getMarker()));
-        entry = consumer.nextEntry();
-        assertTrue(entry.contains(' ' + loggerMarker + "] "));
+        final String errorMarker = AbstractLogger.ReservedLevel.ERROR.getMarker();
+        assertTrue(entry.contains(' ' + errorMarker + "] "));
+        assertTrue(entry.contains("Could not evaluate lazy message at level: " + level.getMarker() + System.lineSeparator()));
+        assertTrue(entry.contains(AbstractLogger.throwableToString(e)));
+    }
+
+    @ParameterizedTest
+    @EnumSource(StandardLevel.class)
+    void logThrowableWithMessage(StandardLevel level) throws InterruptedException {
+        Exception e = new Exception();
+        UUID message = UUID.randomUUID();
+        logger.throwable(level, e, message);
+
+        String entry = consumer.nextEntry();
+        assertTrue(entry.contains(' ' + level.getMarker() + "] "));
+        assertTrue(entry.contains("] " + message + System.lineSeparator()));
+        assertTrue(entry.contains(AbstractLogger.throwableToString(e)));
+    }
+
+    @ParameterizedTest
+    @EnumSource(StandardLevel.class)
+    void logThrowableWithLazyMessage(StandardLevel level) throws InterruptedException {
+        Exception e = new Exception();
+        UUID message = UUID.randomUUID();
+        logger.throwable(level, e, () -> message);
+
+        String entry = consumer.nextEntry();
+        assertTrue(entry.contains(' ' + level.getMarker() + "] "));
+        assertTrue(entry.contains("] " + message + System.lineSeparator()));
+        assertTrue(entry.contains(AbstractLogger.throwableToString(e)));
+    }
+
+    @ParameterizedTest
+    @EnumSource(StandardLevel.class)
+    void logThrowableWithParameterizedMessage(StandardLevel level) throws InterruptedException {
+        Exception e = new Exception();
+        UUID message = UUID.randomUUID();
+        logger.throwable(level, e, "{}", message);
+
+        String entry = consumer.nextEntry();
+        assertTrue(entry.contains(' ' + level.getMarker() + "] "));
+        assertTrue(entry.contains("] " + message + System.lineSeparator()));
         assertTrue(entry.contains(AbstractLogger.throwableToString(e)));
     }
 }

@@ -52,8 +52,7 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void throwable(Level level, Throwable throwable, LazyMessage lazyMessage) {
-        log(level, lazyMessage);
-        log(level, () -> throwableToString(throwable));
+        log(level, new ParameterizedMessage("{}%n{}", null, null).with(lazyMessage, () -> throwableToString(throwable)));
     }
 
     @Override
@@ -109,8 +108,9 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void throwable(Level level, Throwable throwable, String parameterizedMessage, Object... arguments) {
-        log(level, parameterizedMessage, arguments);
-        log(level, () -> throwableToString(throwable));
+        log(level, new ParameterizedMessage("{}%n{}", null, null).with(
+                new ParameterizedMessage(parameterizedMessage, Objects.contentNotNull(arguments, "arguments")),
+                () -> throwableToString(throwable)));
     }
 
     @Override
@@ -166,8 +166,7 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public void throwable(Level level, Throwable throwable, Object message) {
-        log(level, message);
-        log(level, throwableToString(throwable));
+        log(level, message + "%n" + throwableToString(throwable));
     }
 
     @Override

@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MessageFormatterTest {
-    private static final String normalized = "Hello" + System.lineSeparator() + "Hello";
-
     private Formatter formatter;
 
     @BeforeEach
@@ -18,6 +16,7 @@ class MessageFormatterTest {
 
     @Test
     void lineSeparatorNormalization() throws Exception {
+        String normalized = "Hello" + System.lineSeparator() + "Hello";
         assertEquals(normalized, normalize("Hello\r\nHello"));
         assertEquals(normalized, normalize("Hello\nHello"));
         assertEquals(normalized, normalize("Hello%nHello"));

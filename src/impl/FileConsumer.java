@@ -2,6 +2,7 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.AtomicLazy;
 import it.menzani.logger.Lazy;
+import it.menzani.logger.Objects;
 import it.menzani.logger.api.Consumer;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public final class FileConsumer implements Consumer, Lazy.Initializer<PrintWrite
     private final Lazy<PrintWriter> writer = new AtomicLazy<>(this, 10);
 
     public FileConsumer(Path file) {
-        this.file = file;
+        this.file = Objects.objectNotNull(file, "file");
     }
 
     @Override

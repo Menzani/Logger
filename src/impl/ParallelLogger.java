@@ -145,8 +145,7 @@ public final class ParallelLogger extends PipelineLogger {
             try {
                 consumer.awaitTermination();
             } catch (InterruptedException e) {
-                Error error = new ThreadInterruptedError();
-                error.print(e);
+                throwException(new ThreadInterruptedLoggerException(e));
             } finally {
                 executor.shutdown();
             }
@@ -166,9 +165,7 @@ public final class ParallelLogger extends PipelineLogger {
                     consume(entry);
                 }
             } catch (InterruptedException e) {
-                ThreadInterruptedError error = new ThreadInterruptedError();
-                error.resetInterruptStatus();
-                error.print(e);
+                throwException(new ThreadInterruptedLoggerException(e)).resetInterruptStatus();
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof ExecutionException) {
@@ -223,7 +220,7 @@ public final class ParallelLogger extends PipelineLogger {
         }
 
         private void run() throws InterruptedException, ExecutionException {
-            boolean failure = joinAny(pipeline.getFilters(), filter -> () -> filter.test(entry), Boolean::booleanValue);
+            boolean failure = joinAny(pipeline.getFilters(), filter -> () -> filter.test(entry, ParallelLogger.this), Boolean::booleanValue);
             if (failure) return;
 
             ProducerView producer = pipeline.getProducer();
@@ -241,7 +238,7 @@ public final class ParallelLogger extends PipelineLogger {
             String formattedEntry = producer.produce(formattedFragments);
 
             joinAll(pipeline.getConsumers().stream()
-                    .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry))
+                    .map(consumer -> (Runnable) () -> consumer.accept(entry, formattedEntry, ParallelLogger.this))
                     .map(executor::submit));
         }
 
@@ -267,23 +264,6 @@ public final class ParallelLogger extends PipelineLogger {
                 }
             }
             return false;
-        }
-    }
-
-    private static final class ThreadInterruptedError extends Error {
-        private final Thread thread;
-
-        private ThreadInterruptedError() {
-            this(Thread.currentThread());
-        }
-
-        private ThreadInterruptedError(Thread thread) {
-            super(thread.getName() + " thread was interrupted.");
-            this.thread = thread;
-        }
-
-        private void resetInterruptStatus() {
-            thread.interrupt();
         }
     }
 }

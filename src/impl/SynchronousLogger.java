@@ -31,7 +31,7 @@ public final class SynchronousLogger extends PipelineLogger {
     protected void doLog(LogEntry logEntry) {
         for (Pipeline pipeline : getPipelines()) {
             boolean rejected = pipeline.getFilters().stream()
-                    .anyMatch(filter -> filter.test(logEntry));
+                    .anyMatch(filter -> filter.test(logEntry, this));
             if (rejected) continue;
 
             ProducerView producer = pipeline.getProducer();
@@ -48,7 +48,7 @@ public final class SynchronousLogger extends PipelineLogger {
                             })));
 
             pipeline.getConsumers()
-                    .forEach(consumer -> consumer.accept(logEntry, formattedEntry));
+                    .forEach(consumer -> consumer.accept(logEntry, formattedEntry, this));
         }
     }
 }

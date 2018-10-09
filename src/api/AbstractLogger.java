@@ -1,6 +1,7 @@
 package it.menzani.logger.api;
 
 import it.menzani.logger.Objects;
+import it.menzani.logger.impl.ConsoleExceptionHandler;
 import it.menzani.logger.impl.LogEntry;
 import it.menzani.logger.impl.ParameterizedMessage;
 import it.menzani.logger.impl.StandardLevel;
@@ -10,6 +11,17 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 public abstract class AbstractLogger implements Logger {
+    private volatile ExceptionHandler exceptionHandler = new ConsoleExceptionHandler();
+
+    public <T extends LoggerException> T throwException(T exception) {
+        exceptionHandler.handle(exception);
+        return exception;
+    }
+
+    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+        this.exceptionHandler = Objects.objectNotNull(exceptionHandler, "exceptionHandler");
+    }
+
     @Override
     public void trace(LazyMessage lazyMessage) {
         log(StandardLevel.TRACE, lazyMessage);
@@ -217,19 +229,6 @@ public abstract class AbstractLogger implements Logger {
         @Override
         public boolean isError() {
             return error;
-        }
-    }
-
-    protected static abstract class Error {
-        private final String message;
-
-        protected Error(String message) {
-            this.message = message;
-        }
-
-        public void print(Exception e) {
-            System.err.println("[Logger] " + message);
-            e.printStackTrace();
         }
     }
 }

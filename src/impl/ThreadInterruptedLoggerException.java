@@ -1,5 +1,6 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.Objects;
 import it.menzani.logger.api.LoggerException;
 
 public final class ThreadInterruptedLoggerException extends LoggerException {
@@ -10,7 +11,7 @@ public final class ThreadInterruptedLoggerException extends LoggerException {
     }
 
     public ThreadInterruptedLoggerException(InterruptedException exception, Thread thread) {
-        super(thread.getName() + " thread was interrupted.", exception);
+        super(Objects.objectNotNull(thread, "thread").getName() + " thread was interrupted.", exception);
         this.thread = thread;
     }
 

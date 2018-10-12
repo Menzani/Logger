@@ -53,7 +53,7 @@ public final class ParallelLogger extends PipelineLogger {
             parallelism = getParallelism();
         }
         if (log) log(ReservedLevel.INFORMATION, "Parallelism of {} set to {}",
-                getName().orElse(getClass().getSimpleName()), parallelism);
+                getName().orElse("ParallelLogger"), parallelism);
         return this;
     }
 

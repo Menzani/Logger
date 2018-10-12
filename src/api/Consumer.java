@@ -10,7 +10,7 @@ public interface Consumer {
         try {
             consume(entry, formattedEntry);
         } catch (Exception e) {
-            logger.throwException(new PipelineLoggerException(e, Consumer.class, this));
+            logger.throwException(new PipelineLoggerException(e, PipelineLoggerException.PipelineElement.CONSUMER, this));
         }
     }
 }

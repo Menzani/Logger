@@ -13,7 +13,7 @@ public interface Filter extends BiPredicate<LogEntry, AbstractLogger> {
         try {
             return reject(entry);
         } catch (Exception e) {
-            logger.throwException(new PipelineLoggerException(e, Filter.class, this));
+            logger.throwException(new PipelineLoggerException(e, PipelineLoggerException.PipelineElement.FILTER, this));
             return true;
         }
     }

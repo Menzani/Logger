@@ -1,5 +1,6 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.ConfigurableThreadFactory;
 import it.menzani.logger.Profiler;
 import it.menzani.logger.api.Filter;
 import it.menzani.logger.api.Formatter;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 
 public final class ParallelLogger extends PipelineLogger {
     private volatile ExecutorService executor;
-    private ThreadManager threadManager;
+    private ShutdownThread shutdownThread;
     private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
@@ -34,14 +35,14 @@ public final class ParallelLogger extends PipelineLogger {
     public synchronized ParallelLogger setParallelism(int parallelism) {
         Runtime runtime = Runtime.getRuntime();
         if (executor != null) {
-            threadManager.run();
-            boolean wasRegistered = runtime.removeShutdownHook(threadManager);
+            shutdownThread.run();
+            boolean wasRegistered = runtime.removeShutdownHook(shutdownThread);
             assert wasRegistered;
         }
         Consumer consumer = profilerBuilder == null ? new Consumer() : new ProfiledConsumer(profilerBuilder);
-        threadManager = new ThreadManager(consumer);
-        runtime.addShutdownHook(threadManager);
-        executor = Executors.newFixedThreadPool(parallelism, threadManager);
+        shutdownThread = new ShutdownThread(consumer);
+        runtime.addShutdownHook(shutdownThread);
+        executor = Executors.newFixedThreadPool(parallelism, ConfigurableThreadFactory.daemon("ParallelLogger daemon"));
         executor.execute(consumer);
         return this;
     }
@@ -123,21 +124,12 @@ public final class ParallelLogger extends PipelineLogger {
         }
     }
 
-    private final class ThreadManager extends Thread implements ThreadFactory {
-        private final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+    private final class ShutdownThread extends Thread {
         private final Consumer consumer;
 
-        private ThreadManager(Consumer consumer) {
+        private ShutdownThread(Consumer consumer) {
             super("ParallelLogger shutdown");
             this.consumer = consumer;
-        }
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = defaultFactory.newThread(r);
-            thread.setName("ParallelLogger daemon");
-            thread.setDaemon(true);
-            return thread;
         }
 
         @Override

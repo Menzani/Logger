@@ -43,7 +43,7 @@ public abstract class PipelineLogger extends ToggleableNamedLogger {
 
     public PipelineLogger profiled() {
         return profiled(profilerBuilder()
-                .withMessageFormat(getName().orElse(getClass().getSimpleName()) + ": {}"));
+                .withMessageFormat(getName().orElse(getClass().getSimpleName()) + ": {ELAPSED}"));
     }
 
     public PipelineLogger profiled(ProfiledLogger.ProfilerBuilder profilerBuilder) {

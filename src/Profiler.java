@@ -9,13 +9,13 @@ import java.time.Duration;
 public final class Profiler implements AutoCloseable {
     private final Logger logger;
     private final Level level;
-    private final String messageFormat;
+    private final StringFormat messageFormat;
     private final long startTime;
 
     private Profiler(Logger logger, Level level, String messageFormat) {
         this.logger = logger;
         this.level = level;
-        this.messageFormat = messageFormat;
+        this.messageFormat = new StringFormat(Objects.objectNotNull(messageFormat, "messageFormat"));
         startTime = System.nanoTime();
     }
 
@@ -36,8 +36,8 @@ public final class Profiler implements AutoCloseable {
     }
 
     public String toString(Duration duration) {
-        String formatted = String.format("%ds %dms", duration.getSeconds() % 60, duration.getNano() / 1_000_000);
-        return messageFormat.replace("{}", formatted);
+        String elapsed = String.format("%ds %dms", duration.getSeconds() % 60, duration.getNano() / 1_000_000);
+        return messageFormat.fill("elapsed", elapsed).toString();
     }
 
     @Override

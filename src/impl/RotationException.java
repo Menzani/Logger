@@ -1,11 +1,11 @@
 package it.menzani.logger.impl;
 
-final class RotationException extends RuntimeException {
-    RotationException(String cause) {
+public final class RotationException extends RuntimeException {
+    public RotationException(String cause) {
         super("Could not switch file: " + cause + '.');
     }
 
-    RotationException(Exception cause) {
+    public RotationException(Exception cause) {
         super("Could not switch file.", cause);
     }
 }

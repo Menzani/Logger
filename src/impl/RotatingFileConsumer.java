@@ -31,13 +31,13 @@ public final class RotatingFileConsumer implements Consumer {
         currentFile.writer.println(formattedEntry);
     }
 
-    private synchronized Optional<LogFile> shouldRotate() throws Exception {
+    private synchronized Optional<LogFile> shouldRotate() throws IOException {
         if (currentFile == null) {
             Files.createDirectories(root);
-            policy.initialize(root);
-            return Optional.of(new LogFile(policy.currentFile()));
+            policy.doInitialize(root);
+            return Optional.of(new LogFile(policy.getCurrentFile()));
         }
-        Path currentFilePath = policy.currentFile();
+        Path currentFilePath = policy.getCurrentFile();
         if (currentFile.path.equals(currentFilePath)) {
             return Optional.empty();
         }

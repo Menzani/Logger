@@ -23,21 +23,18 @@ public final class StartupRotationPolicy implements RotationPolicy {
 
     @Override
     public void initialize(Path root) throws Exception {
-        currentFile = nextAvailableFile(root);
+        for (short id = 1; id < Short.MAX_VALUE; id++) {
+            Path file = root.resolve(nameFormat.evaluateAndClone().fill("id", id).toString());
+            if (Files.notExists(file)) {
+                currentFile = file;
+                return;
+            }
+        }
+        throw new RotationException("all IDs have been used");
     }
 
     @Override
     public Path currentFile() {
         return currentFile;
-    }
-
-    private Path nextAvailableFile(Path root) throws Exception {
-        for (short id = 1; id < Short.MAX_VALUE; id++) {
-            Path file = root.resolve(nameFormat.evaluateAndClone().fill("id", id).toString());
-            if (Files.notExists(file)) {
-                return file;
-            }
-        }
-        throw new RotationException("all IDs have been used");
     }
 }

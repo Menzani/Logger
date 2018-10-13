@@ -1,33 +1,29 @@
 package it.menzani.logger.impl;
 
 import it.menzani.logger.Objects;
-import it.menzani.logger.api.Formatter;
+import it.menzani.logger.StringFormat;
 import it.menzani.logger.api.RotationPolicy;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class StartupRotationPolicy implements RotationPolicy {
-    private final Object prefix;
-    private final char prefixSeparator;
+    private final StringFormat nameFormat;
     private Path currentFile;
 
-    public StartupRotationPolicy(String prefix, char prefixSeparator) {
-        this((Object) prefix, prefixSeparator);
+    public StartupRotationPolicy(String nameFormat) {
+        this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"));
     }
 
-    public StartupRotationPolicy(TimestampFormatter prefix, char prefixSeparator) {
-        this((Object) prefix, prefixSeparator);
-    }
-
-    private StartupRotationPolicy(Object prefix, char prefixSeparator) {
-        this.prefix = Objects.objectNotNull(prefix, "prefix");
-        this.prefixSeparator = prefixSeparator;
+    public StartupRotationPolicy(String nameFormat, TimestampFormatter timestampFormatter) {
+        this(nameFormat);
+        Objects.objectNotNull(timestampFormatter, "timestampFormatter");
+        this.nameFormat.evaluate("time", () -> timestampFormatter.format(null));
     }
 
     @Override
     public void initialize(Path root) throws Exception {
-        currentFile = nextAvailableFile(root, getPrefix());
+        currentFile = nextAvailableFile(root);
     }
 
     @Override
@@ -35,23 +31,13 @@ public final class StartupRotationPolicy implements RotationPolicy {
         return currentFile;
     }
 
-    private String getPrefix() throws Exception {
-        if (prefix instanceof String) {
-            return (String) prefix + prefixSeparator;
-        }
-        if (prefix instanceof TimestampFormatter) {
-            return ((Formatter) prefix).format(null) + prefixSeparator;
-        }
-        throw new AssertionError();
-    }
-
-    private Path nextAvailableFile(Path root, String prefix) {
-        for (short suffix = 1; suffix < Short.MAX_VALUE; suffix++) {
-            Path file = root.resolve(prefix + suffix);
+    private Path nextAvailableFile(Path root) throws Exception {
+        for (short id = 1; id < Short.MAX_VALUE; id++) {
+            Path file = root.resolve(nameFormat.evaluateAndClone().fill("id", id).toString());
             if (Files.notExists(file)) {
                 return file;
             }
         }
-        throw new RotationException("all suffixes have been used");
+        throw new RotationException("all IDs have been used");
     }
 }

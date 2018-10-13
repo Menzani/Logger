@@ -18,8 +18,8 @@ public final class RotatingFileConsumer implements Consumer {
     private volatile LogFile currentFile;
 
     public RotatingFileConsumer(Path root, RotationPolicy policy) {
-        if (!Files.isDirectory(Objects.objectNotNull(root, "root"))) {
-            throw new IllegalArgumentException("root must be a directory.");
+        if (Files.isRegularFile(Objects.objectNotNull(root, "root"))) {
+            throw new IllegalArgumentException("root must not be an existing file.");
         }
         this.root = root;
         this.policy = Objects.objectNotNull(policy, "policy");
@@ -33,6 +33,7 @@ public final class RotatingFileConsumer implements Consumer {
 
     private synchronized Optional<LogFile> shouldRotate() throws Exception {
         if (currentFile == null) {
+            Files.createDirectories(root);
             policy.initialize(root);
             return Optional.of(new LogFile(policy.currentFile()));
         }

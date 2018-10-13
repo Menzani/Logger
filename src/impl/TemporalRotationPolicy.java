@@ -2,6 +2,7 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.ConfigurableThreadFactory;
 import it.menzani.logger.Objects;
+import it.menzani.logger.StringFormat;
 import it.menzani.logger.api.RotationPolicy;
 
 import java.nio.file.Path;
@@ -15,17 +16,19 @@ import java.util.concurrent.TimeUnit;
 public final class TemporalRotationPolicy implements RotationPolicy, Runnable {
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
             ConfigurableThreadFactory.daemon("TemporalRotationPolicy daemon"));
-    private final TimestampFormatter name;
+    private final StringFormat nameFormat;
     private final Instant rotationInstant;
     private final Duration rotationPeriod;
     private volatile Path root;
     private volatile Path currentFile;
 
-    public TemporalRotationPolicy(TimestampFormatter name, Instant rotationInstant, Duration rotationPeriod) {
+    public TemporalRotationPolicy(String nameFormat, TimestampFormatter timestampFormatter,
+                                  Instant rotationInstant, Duration rotationPeriod) {
         if (Objects.objectNotNull(rotationPeriod, "rotationPeriod").isNegative() || rotationPeriod.isZero()) {
             throw new IllegalArgumentException("rotationPeriod must be positive.");
         }
-        this.name = Objects.objectNotNull(name, "name");
+        this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"))
+                .evaluate("time", () -> timestampFormatter.format(null));
         this.rotationInstant = Objects.objectNotNull(rotationInstant, "rotationInstant");
         this.rotationPeriod = rotationPeriod;
     }
@@ -41,7 +44,7 @@ public final class TemporalRotationPolicy implements RotationPolicy, Runnable {
     @Override
     public void run() {
         try {
-            currentFile = root.resolve(name.format(null));
+            currentFile = root.resolve(nameFormat.clone().evaluateToString());
         } catch (Exception e) {
             throw new RotationException(e);
         }

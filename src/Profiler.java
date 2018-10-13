@@ -9,13 +9,13 @@ import java.time.Duration;
 public final class Profiler implements AutoCloseable {
     private final Logger logger;
     private final Level level;
-    private final String format;
+    private final String messageFormat;
     private final long startTime;
 
-    private Profiler(Logger logger, Level level, String format) {
+    private Profiler(Logger logger, Level level, String messageFormat) {
         this.logger = logger;
         this.level = level;
-        this.format = format;
+        this.messageFormat = messageFormat;
         startTime = System.nanoTime();
     }
 
@@ -37,7 +37,7 @@ public final class Profiler implements AutoCloseable {
 
     public String toString(Duration duration) {
         String formatted = String.format("%ds %dms", duration.getSeconds() % 60, duration.getNano() / 1_000_000);
-        return format.replace("{}", formatted);
+        return messageFormat.replace("{}", formatted);
     }
 
     @Override
@@ -52,7 +52,7 @@ public final class Profiler implements AutoCloseable {
     public static class Builder implements it.menzani.logger.Builder<Profiler> {
         private Logger logger;
         private Level level = StandardLevel.DEBUG;
-        private String format;
+        private String messageFormat;
         private boolean locked;
 
         protected Builder() {
@@ -70,9 +70,9 @@ public final class Profiler implements AutoCloseable {
             return this;
         }
 
-        public Builder withFormat(String format) {
+        public Builder withMessageFormat(String messageFormat) {
             checkLocked();
-            this.format = format;
+            this.messageFormat = messageFormat;
             return this;
         }
 
@@ -82,13 +82,13 @@ public final class Profiler implements AutoCloseable {
 
         @Override
         public void validate() {
-            if (format == null) throw it.menzani.logger.Builder.newValidationException("format");
+            if (messageFormat == null) throw it.menzani.logger.Builder.newValidationException("messageFormat");
         }
 
         @Override
         public Profiler build() {
             if (!locked) validate();
-            return new Profiler(logger, level, format);
+            return new Profiler(logger, level, messageFormat);
         }
 
         @Override

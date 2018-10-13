@@ -83,8 +83,8 @@ public final class ProfiledLogger extends PipelineLogger {
         }
 
         @Override
-        public ProfilerBuilder withFormat(String format) {
-            super.withFormat(format);
+        public ProfilerBuilder withMessageFormat(String messageFormat) {
+            super.withMessageFormat(messageFormat);
             return this;
         }
 

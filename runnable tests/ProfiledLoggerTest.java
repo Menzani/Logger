@@ -5,7 +5,7 @@ import it.menzani.logger.impl.SynchronousLogger;
 
 import java.util.UUID;
 
-public class ProfiledLoggerTest {
+class ProfiledLoggerTest {
     public static void main(String[] args) {
         Logger logger = new SynchronousLogger()
                 .addPipeline(new Pipeline()

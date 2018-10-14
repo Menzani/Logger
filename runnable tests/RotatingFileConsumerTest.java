@@ -41,7 +41,9 @@ public class RotatingFileConsumerTest {
 
     private static RotationPolicy newTemporalRotationPolicy() throws IOException {
         cleanOutput();
-        return new TemporalRotationPolicy("Temporal {TIME}.log", new TimestampFormatter(), Instant.now().plusSeconds(2), Duration.ofSeconds(2));
+        return new TemporalRotationPolicy("Temporal {TIME}.log", new TimestampFormatter(),
+//                LocalTime::now, LocalTime.of(16, 20), Duration.ofDays(1));
+                Instant::now, Instant.now().plusSeconds(2), Duration.ofSeconds(2));
     }
 
     private static void cleanOutput() throws IOException {

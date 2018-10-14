@@ -5,7 +5,7 @@ import it.menzani.logger.api.Formatter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.time.temporal.TemporalAccessor;
+import java.time.temporal.Temporal;
 
 public final class TimestampFormatter implements Formatter {
     private final Clock clock;
@@ -27,6 +27,6 @@ public final class TimestampFormatter implements Formatter {
 
     @FunctionalInterface
     public interface Clock {
-        TemporalAccessor now() throws Exception;
+        Temporal now() throws Exception;
     }
 }

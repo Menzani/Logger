@@ -1,6 +1,5 @@
 package it.menzani.logger;
 
-import it.menzani.logger.api.CloneException;
 import it.menzani.logger.api.Cloneable;
 import it.menzani.logger.api.LazyMessage;
 
@@ -53,7 +52,7 @@ public final class StringFormat implements Cloneable<StringFormat> {
         for (Map.Entry<String, Object> entry : valueSuppliers.entrySet()) {
             Object value = entry.getValue();
             if (value instanceof LazyMessage) {
-                throw new IllegalStateException("Value supplier of type LazyMessage found; use #evaluateToString() instead.");
+                throw new IllegalStateException("Value supplier of type LazyMessage found. Use #evaluateToString() instead.");
             }
             if (value instanceof Supplier<?>) {
                 fill(entry.getKey(), ((Supplier<?>) value).get());
@@ -61,6 +60,7 @@ public final class StringFormat implements Cloneable<StringFormat> {
                 throw new AssertionError();
             }
         }
+        valueSuppliers.clear();
         return format;
     }
 
@@ -76,25 +76,12 @@ public final class StringFormat implements Cloneable<StringFormat> {
                 throw new AssertionError();
             }
         }
+        valueSuppliers.clear();
         return format;
     }
 
     @Override
     public StringFormat clone() {
         return new StringFormat(format, new HashMap<>(valueSuppliers)).delimiters(start, end);
-    }
-
-    public StringFormat formatAndClone() {
-        String formatted;
-        try {
-            formatted = toString();
-        } catch (IllegalStateException e) {
-            throw new CloneException(this, "value supplier of type LazyMessage found; use #evaluateAndClone() instead");
-        }
-        return new StringFormat(formatted).delimiters(start, end);
-    }
-
-    public StringFormat evaluateAndClone() throws Exception {
-        return new StringFormat(evaluateToString()).delimiters(start, end);
     }
 }

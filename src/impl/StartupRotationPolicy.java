@@ -23,8 +23,9 @@ public final class StartupRotationPolicy implements RotationPolicy {
 
     @Override
     public void initialize(Path root) throws Exception {
+        nameFormat.evaluateToString();
         for (short id = 1; id < Short.MAX_VALUE; id++) {
-            Path file = root.resolve(nameFormat.evaluateAndClone().fill("id", id).toString());
+            Path file = root.resolve(nameFormat.clone().fill("id", id).toString());
             if (Files.notExists(file)) {
                 currentFile = file;
                 return;

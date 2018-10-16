@@ -1,5 +1,7 @@
 package it.menzani.logger.impl;
 
+import it.menzani.logger.Objects;
+import it.menzani.logger.api.Clock;
 import it.menzani.logger.api.Formatter;
 
 import java.time.LocalDateTime;
@@ -10,23 +12,26 @@ import java.time.temporal.Temporal;
 public final class TimestampFormatter implements Formatter {
     private final Clock clock;
     private final DateTimeFormatter formatter;
+    private volatile boolean timestampSource = true;
 
     public TimestampFormatter() {
         this(LocalDateTime::now, DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
     }
 
     public TimestampFormatter(Clock clock, DateTimeFormatter formatter) {
-        this.clock = clock;
-        this.formatter = formatter;
+        this.clock = Objects.objectNotNull(clock, "clock");
+        this.formatter = Objects.objectNotNull(formatter, "formatter");
+    }
+
+    public TimestampFormatter setTimestampSource(boolean timestampSource) {
+        this.timestampSource = timestampSource;
+        return this;
     }
 
     @Override
     public String format(LogEntry entry) throws Exception {
-        return formatter.format(clock.now());
-    }
-
-    @FunctionalInterface
-    public interface Clock {
-        Temporal now() throws Exception;
+        Temporal timestamp = Objects.objectNotNull(clock.now(), "clock#now()");
+        if (timestampSource) entry.setTimestamp(timestamp);
+        return formatter.format(timestamp);
     }
 }

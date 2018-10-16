@@ -1,62 +1,39 @@
 package it.menzani.logger.impl;
 
-import it.menzani.logger.ConfigurableThreadFactory;
 import it.menzani.logger.Objects;
 import it.menzani.logger.StringFormat;
 import it.menzani.logger.api.RotationPolicy;
 
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.*;
 
-// FIXME Always switches on startup.
-// FIXME Switch time is not precise.
-@Deprecated
-public final class TemporalRotationPolicy implements RotationPolicy, Runnable {
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
-            ConfigurableThreadFactory.daemon("TemporalRotationPolicy daemon"));
+public final class TemporalRotationPolicy implements RotationPolicy {
     private final StringFormat nameFormat;
-    private final TimestampFormatter.Clock clock;
-    private final Temporal rotationInstant;
-    private final Duration rotationPeriod;
-    private volatile Path root;
-    private volatile Path currentFile;
+    private final DateTimeFormatter timestampFormatter;
+    private final int stepWidth;
+    private final TemporalField stepWidthField;
 
-    public TemporalRotationPolicy(String nameFormat, TimestampFormatter timestampFormatter,
-                                  TimestampFormatter.Clock clock, Temporal rotationInstant, Duration rotationPeriod) {
-        this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"))
-                .evaluate("time", () -> timestampFormatter.format(null));
-        this.clock = Objects.objectNotNull(clock, "clock");
-        this.rotationInstant = Objects.objectNotNull(rotationInstant, "rotationInstant");
-        if (Objects.objectNotNull(rotationPeriod, "rotationPeriod").isNegative() || rotationPeriod.isZero()) {
-            throw new IllegalArgumentException("rotationPeriod must be positive.");
+    public TemporalRotationPolicy(String nameFormat, DateTimeFormatter timestampFormatter,
+                                  int stepWidth, TemporalField stepWidthField) {
+        if (stepWidth < 1) {
+            throw new IllegalArgumentException("stepWidth must be positive.");
         }
-        this.rotationPeriod = rotationPeriod;
+        this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"));
+        this.timestampFormatter = Objects.objectNotNull(timestampFormatter, "timestampFormatter");
+        this.stepWidth = stepWidth;
+        this.stepWidthField = Objects.objectNotNull(stepWidthField, "stepWidthField");
     }
 
     @Override
-    public void initialize(Path root) throws Exception {
-        this.root = root;
-        run();
-        long delay = clock.now().until(rotationInstant, ChronoUnit.MILLIS);
-        executor.scheduleAtFixedRate(this, delay, rotationPeriod.toMillis(), TimeUnit.MILLISECONDS);
+    public void initialize(Path root, Temporal timestamp) {
+        // Do nothing
     }
 
     @Override
-    public void run() {
-        try {
-            currentFile = root.resolve(nameFormat.clone().evaluateToString());
-        } catch (Exception e) {
-            throw new RotationException(e);
-        }
-    }
-
-    @Override
-    public Path currentFile() {
-        return currentFile;
+    public Path currentFile(Path root, Temporal timestamp) {
+        TemporalAccessor roundedDown = timestamp.with(stepWidthField,
+                timestamp.get(stepWidthField) / stepWidth * stepWidth);
+        return root.resolve(nameFormat.clone().fill("timestamp", timestampFormatter.format(roundedDown)).toString());
     }
 }

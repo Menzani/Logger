@@ -69,5 +69,6 @@ public final class LoggerGroup extends ToggleableNamedLogger {
 
     @Override
     protected void doLog(LogEntry entry) {
+        // Do nothing
     }
 }

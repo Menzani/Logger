@@ -6,24 +6,26 @@ import it.menzani.logger.api.RotationPolicy;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 
 public final class StartupRotationPolicy implements RotationPolicy {
     private final StringFormat nameFormat;
+    private final DateTimeFormatter timestampFormatter;
     private Path currentFile;
 
     public StartupRotationPolicy(String nameFormat) {
-        this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"));
+        this(nameFormat, null);
     }
 
-    public StartupRotationPolicy(String nameFormat, TimestampFormatter timestampFormatter) {
-        this(nameFormat);
-        Objects.objectNotNull(timestampFormatter, "timestampFormatter");
-        this.nameFormat.evaluate("time", () -> timestampFormatter.format(null));
+    public StartupRotationPolicy(String nameFormat, DateTimeFormatter timestampFormatter) {
+        this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"));
+        this.timestampFormatter = timestampFormatter;
     }
 
     @Override
-    public void initialize(Path root) throws Exception {
-        nameFormat.evaluateToString();
+    public void initialize(Path root, Temporal timestamp) {
+        nameFormat.fill("timestamp", timestampFormatter.format(timestamp));
         for (short id = 1; id < Short.MAX_VALUE; id++) {
             Path file = root.resolve(nameFormat.clone().fill("id", id).toString());
             if (Files.notExists(file)) {
@@ -35,7 +37,7 @@ public final class StartupRotationPolicy implements RotationPolicy {
     }
 
     @Override
-    public Path currentFile() {
+    public Path currentFile(Path root, Temporal timestamp) {
         return currentFile;
     }
 }

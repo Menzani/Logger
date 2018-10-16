@@ -2,11 +2,9 @@ import it.menzani.logger.api.Logger;
 import it.menzani.logger.api.RotationPolicy;
 import it.menzani.logger.impl.*;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoField;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -39,13 +37,13 @@ class RotatingFileConsumerTest {
     }
 
     private static RotationPolicy newStartupRotationPolicy() {
-        return new StartupRotationPolicy("Startup {TIME}-{ID}.log", new TimestampFormatter(
-                LocalDate::now, DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
+        return new StartupRotationPolicy("Startup {TIMESTAMP}-{ID}.log",
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
     }
 
     private static RotationPolicy newTemporalRotationPolicy() {
         Runtime.cleanOutput();
-        return new TemporalRotationPolicy("Temporal {TIME}.log", new TimestampFormatter(),
-                Instant::now, Instant.now().plusSeconds(2), Duration.ofSeconds(2));
+        return new TemporalRotationPolicy("Temporal {TIMESTAMP}.log",
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM), 2, ChronoField.SECOND_OF_MINUTE);
     }
 }

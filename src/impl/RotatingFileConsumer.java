@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.temporal.Temporal;
 import java.util.Optional;
 
 public final class RotatingFileConsumer implements Consumer {
@@ -27,17 +28,17 @@ public final class RotatingFileConsumer implements Consumer {
 
     @Override
     public void consume(LogEntry entry, String formattedEntry) throws Exception {
-        shouldRotate().ifPresent(currentFile -> this.currentFile = currentFile);
+        shouldRotate(entry.getTimestamp()).ifPresent(currentFile -> this.currentFile = currentFile);
         currentFile.writer.println(formattedEntry);
     }
 
-    private synchronized Optional<LogFile> shouldRotate() throws IOException {
+    private synchronized Optional<LogFile> shouldRotate(Temporal timestamp) throws IOException {
         if (currentFile == null) {
             Files.createDirectories(root);
-            policy.doInitialize(root);
-            return Optional.of(new LogFile(policy.getCurrentFile()));
+            policy.doInitialize(root, timestamp);
+            return Optional.of(new LogFile(policy.getCurrentFile(root, timestamp)));
         }
-        Path currentFilePath = policy.getCurrentFile();
+        Path currentFilePath = policy.getCurrentFile(root, timestamp);
         if (currentFile.path.equals(currentFilePath)) {
             return Optional.empty();
         }

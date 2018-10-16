@@ -28,11 +28,13 @@ public final class RotatingFileConsumer implements Consumer {
 
     @Override
     public void consume(LogEntry entry, String formattedEntry) throws Exception {
-        shouldRotate(entry.getTimestamp()).ifPresent(currentFile -> this.currentFile = currentFile);
+        synchronized (this) {
+            shouldRotate(entry.getTimestamp()).ifPresent(newerFile -> currentFile = newerFile);
+        }
         currentFile.writer.println(formattedEntry);
     }
 
-    private synchronized Optional<LogFile> shouldRotate(Temporal timestamp) throws IOException {
+    private Optional<LogFile> shouldRotate(Temporal timestamp) throws IOException {
         if (currentFile == null) {
             Files.createDirectories(root);
             policy.doInitialize(root, timestamp);

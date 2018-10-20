@@ -6,6 +6,7 @@
 
 package it.menzani.logger.impl;
 
+import it.menzani.logger.Nullable;
 import it.menzani.logger.Objects;
 import it.menzani.logger.StringFormat;
 import it.menzani.logger.api.RotationPolicy;
@@ -24,14 +25,16 @@ public final class StartupRotationPolicy implements RotationPolicy {
         this(nameFormat, null);
     }
 
-    public StartupRotationPolicy(String nameFormat, DateTimeFormatter timestampFormatter) {
+    public StartupRotationPolicy(String nameFormat, @Nullable DateTimeFormatter timestampFormatter) {
         this.nameFormat = new StringFormat(Objects.objectNotNull(nameFormat, "nameFormat"));
         this.timestampFormatter = timestampFormatter;
     }
 
     @Override
     public void initialize(Path root, Temporal timestamp) {
-        nameFormat.fill("timestamp", timestampFormatter.format(timestamp));
+        if (timestampFormatter != null) {
+            nameFormat.fill("timestamp", timestampFormatter.format(timestamp));
+        }
         for (short id = 1; id < Short.MAX_VALUE; id++) {
             Path file = root.resolve(nameFormat.clone().fill("id", id).toString());
             if (Files.notExists(file)) {

@@ -21,15 +21,20 @@ import java.util.Optional;
 
 public final class RotatingFileConsumer implements Consumer {
     private final Path root;
-    private final RotationPolicy policy;
+    private RotationPolicy policy;
     private volatile LogFile currentFile;
 
-    public RotatingFileConsumer(Path root, RotationPolicy policy) {
+    public RotatingFileConsumer(Path root) {
         if (Files.isRegularFile(Objects.objectNotNull(root, "root"))) {
             throw new IllegalArgumentException("root must not be an existing file.");
         }
         this.root = root;
+    }
+
+    public synchronized RotatingFileConsumer setPolicy(RotationPolicy policy) {
         this.policy = Objects.objectNotNull(policy, "policy");
+        currentFile = null;
+        return this;
     }
 
     @Override

@@ -19,7 +19,7 @@ class RotatingFileConsumerTest {
                                 .append(" -> ")
                                 .append(new MessageFormatter()))
                         .addConsumer(new ConsoleConsumer())
-                        .addConsumer(new RotatingFileConsumer(Runtime.folder, createRotationPolicy())));
+                        .addConsumer(new RotatingFileConsumer(Runtime.folder).setPolicy(createRotationPolicy())));
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> logger.info(UUID.randomUUID()), 0, 500, TimeUnit.MILLISECONDS);

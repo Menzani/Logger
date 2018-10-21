@@ -8,10 +8,8 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.ConfigurableThreadFactory;
 import it.menzani.logger.Profiler;
-import it.menzani.logger.api.Filter;
+import it.menzani.logger.api.*;
 import it.menzani.logger.api.Formatter;
-import it.menzani.logger.api.PipelineLogger;
-import it.menzani.logger.api.ProfiledLogger;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -83,6 +81,18 @@ public final class ParallelLogger extends PipelineLogger {
                 .mapToInt(Set::size)
                 .max();
         return 1 + pipelines.size() + maxComponents.orElse(0);
+    }
+
+    @Override
+    public ParallelLogger setClock(Clock clock) {
+        super.setClock(clock);
+        return this;
+    }
+
+    @Override
+    public ParallelLogger setExceptionHandler(ExceptionHandler exceptionHandler) {
+        super.setExceptionHandler(exceptionHandler);
+        return this;
     }
 
     @Override
@@ -176,6 +186,7 @@ public final class ParallelLogger extends PipelineLogger {
         }
 
         protected void consume(LogEntry entry) throws InterruptedException, ExecutionException {
+            entry.setTimestamp(getClockTime());
             joinAll(getPipelines().stream()
                     .map(pipeline -> new PipelineConsumer(pipeline, entry))
                     .map(executor::submit));

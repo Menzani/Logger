@@ -49,6 +49,16 @@ public final class LoggerGroup extends ToggleableNamedLogger {
     }
 
     @Override
+    public AbstractLogger setClock(Clock clock) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public AbstractLogger setExceptionHandler(ExceptionHandler exceptionHandler) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void log(Level level, LazyMessage lazyMessage) {
         if (isDisabled()) return;
         for (Logger logger : loggers) {
@@ -75,6 +85,6 @@ public final class LoggerGroup extends ToggleableNamedLogger {
 
     @Override
     protected void doLog(LogEntry entry) {
-        // Do nothing
+        throw new AssertionError();
     }
 }

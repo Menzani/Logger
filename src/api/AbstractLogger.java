@@ -15,17 +15,30 @@ import it.menzani.logger.impl.StandardLevel;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 
 public abstract class AbstractLogger implements Logger {
+    private volatile Clock clock = LocalDateTime::now;
     private volatile ExceptionHandler exceptionHandler = new ConsoleExceptionHandler();
+
+    protected Temporal getClockTime() {
+        return Objects.objectNotNull(clock.now(), "clock#now()");
+    }
+
+    public AbstractLogger setClock(Clock clock) {
+        this.clock = Objects.objectNotNull(clock, "clock");
+        return this;
+    }
 
     public <T extends LoggerException> T throwException(T exception) {
         exceptionHandler.handle(exception);
         return exception;
     }
 
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+    public AbstractLogger setExceptionHandler(ExceptionHandler exceptionHandler) {
         this.exceptionHandler = Objects.objectNotNull(exceptionHandler, "exceptionHandler");
+        return this;
     }
 
     @Override

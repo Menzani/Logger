@@ -18,6 +18,18 @@ public final class ProfiledLogger extends PipelineLogger {
     }
 
     @Override
+    public PipelineLogger setClock(Clock clock) {
+        builder.logger.setClock(clock);
+        return this;
+    }
+
+    @Override
+    public PipelineLogger setExceptionHandler(ExceptionHandler exceptionHandler) {
+        builder.logger.setExceptionHandler(exceptionHandler);
+        return this;
+    }
+
+    @Override
     public Pipeline getPipeline(String name) {
         return builder.logger.getPipeline(name);
     }
@@ -55,7 +67,7 @@ public final class ProfiledLogger extends PipelineLogger {
 
     @Override
     protected PipelineLogger newInstance() {
-        return builder.logger.newInstance();
+        throw new AssertionError();
     }
 
     @Override

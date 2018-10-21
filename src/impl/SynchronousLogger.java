@@ -6,8 +6,7 @@
 
 package it.menzani.logger.impl;
 
-import it.menzani.logger.api.Formatter;
-import it.menzani.logger.api.PipelineLogger;
+import it.menzani.logger.api.*;
 
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +23,18 @@ public final class SynchronousLogger extends PipelineLogger {
     }
 
     @Override
+    public SynchronousLogger setClock(Clock clock) {
+        super.setClock(clock);
+        return this;
+    }
+
+    @Override
+    public SynchronousLogger setExceptionHandler(ExceptionHandler exceptionHandler) {
+        super.setExceptionHandler(exceptionHandler);
+        return this;
+    }
+
+    @Override
     public SynchronousLogger clone() {
         return (SynchronousLogger) super.clone();
     }
@@ -35,6 +46,7 @@ public final class SynchronousLogger extends PipelineLogger {
 
     @Override
     protected void doLog(LogEntry logEntry) {
+        logEntry.setTimestamp(getClockTime());
         for (Pipeline pipeline : getPipelines()) {
             boolean rejected = pipeline.getFilters().stream()
                     .anyMatch(filter -> filter.test(logEntry, this));

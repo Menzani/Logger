@@ -8,16 +8,18 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.AtomicLazy;
 import it.menzani.logger.Lazy;
+import it.menzani.logger.Objects;
 import it.menzani.logger.api.LazyMessage;
 import it.menzani.logger.api.Level;
 
 import java.time.temporal.Temporal;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class LogEntry {
     private final Level level;
     private final Object message;
     private final Lazy<Object> lazyMessage;
-    private volatile Temporal timestamp;
+    private final AtomicReference<Temporal> timestamp = new AtomicReference<>();
 
     public LogEntry(Level level, Object message, LazyMessage lazyMessage) {
         this.level = level;
@@ -42,16 +44,17 @@ public final class LogEntry {
     }
 
     public Temporal getTimestamp() {
+        Temporal timestamp = this.timestamp.get();
         if (timestamp == null) {
-            throw new IllegalStateException("Timestamp unavailable. Please add at least one TimestampFormatter to the current pipeline.");
+            throw new IllegalStateException("Timestamp was not set.");
         }
         return timestamp;
     }
 
-    synchronized void setTimestamp(Temporal timestamp) {
-        if (this.timestamp != null) {
-            throw new IllegalStateException("Timestamp already set. Please mark all but one TimestampFormatter in the current pipeline not as timestamp sources.");
+    public void setTimestamp(Temporal timestamp) {
+        boolean updated = this.timestamp.compareAndSet(null, Objects.objectNotNull(timestamp, "timestamp"));
+        if (!updated) {
+            throw new IllegalStateException("Timestamp already set.");
         }
-        this.timestamp = timestamp;
     }
 }

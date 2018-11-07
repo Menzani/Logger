@@ -10,14 +10,35 @@
 
 ## Download
 
-JAR bundles containing the source code are available for download in the *Releases* section of this repository.
+All artifacts contain the source code.  
+They are available for download in the *Releases* section of this repository, via Maven or Gradle.  
+When using a build tool, make sure to add [@MrSystem](https://github.com/MrSystem)'s repository:
 
-Java 8 is supported.  
-Backwards compatibility is not guaranteed between major releases.
+**Maven**
+
+```xml
+<repository>
+  <id>github.com/MrSystem</id>
+  <url>https://cdn.fmenza.it/maven</url>
+</repository>
+```
+
+**Gradle**
+
+```groovy
+maven {
+    url 'https://cdn.fmenza.it/maven'
+}
+```
+
+Find coordinates for specific versions in the *Releases* section of this repository.
 
 The rest of this document applies to the latest revision of version **1**.
 
 ---
+
+Java 8 is required.  
+The automatic module name is `it.menzani.logger`.
 
 ## Package structure
 

@@ -78,6 +78,7 @@ public final class ParallelLogger extends PipelineLogger {
                 pipelines.stream()
                         .map(Pipeline::getConsumers))
                 .flatMap(Function.identity())
+                .map(Set.class::cast)
                 .mapToInt(Set::size)
                 .max();
         return 1 + pipelines.size() + maxComponents.orElse(0);

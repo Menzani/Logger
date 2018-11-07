@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Logger (src)">
+    <output-path>$PROJECT_DIR$/out/artifacts/Logger</output-path>
+    <root id="archive" name="Logger-sources.jar">
+      <element id="module-source" name="Logger" />
+    </root>
+  </artifact>
+</component>

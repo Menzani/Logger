@@ -10,15 +10,14 @@
 
 ## Download
 
-All artifacts contain the source code.  
-They are available for download in the *Releases* section of this repository, via Maven or Gradle.  
+Artifacts are available for download in the *Releases* section of this repository, via Maven or Gradle.  
 When using a build tool, make sure to add [@MrSystem](https://github.com/MrSystem)'s repository:
 
 **Maven**
 
 ```xml
 <repository>
-  <id>github.com/MrSystem</id>
+  <id>MrSystem@GitHub</id>
   <url>https://cdn.fmenza.it/maven</url>
 </repository>
 ```
@@ -31,7 +30,7 @@ maven {
 }
 ```
 
-Find coordinates for specific versions in the *Releases* section of this repository.
+Find coordinates for specific versions in the description of each release.
 
 The rest of this document applies to the latest revision of version **1**.
 

@@ -3,7 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Logger</output-path>
     <root id="archive" name="Logger.jar">
       <element id="module-output" name="Logger" />
-      <element id="module-source" name="Logger" />
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/build/MANIFEST.MF" />
       </element>

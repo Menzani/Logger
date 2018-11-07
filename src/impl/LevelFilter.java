@@ -9,14 +9,14 @@ package it.menzani.logger.impl;
 import it.menzani.logger.api.Filter;
 import it.menzani.logger.api.Level;
 
-public final class LevelFilter implements Filter {
+final class LevelFilter implements Filter {
     private final Level level;
 
-    public LevelFilter(Level level) {
+    LevelFilter(Level level) {
         this.level = level;
     }
 
-    public Level getLevel() {
+    Level getLevel() {
         return level;
     }
 

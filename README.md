@@ -48,3 +48,33 @@ Logger logger = new SynchronousLogger()
                 .addConsumer(new ConsoleConsumer()));
 logger.info("Hello, world!");
 ```
+
+### A more advanced example
+
+```java
+Logger logger = new LoggerGroup()
+        .addLogger(new SynchronousLogger()
+                .addPipeline(new Pipeline()
+                        .setDefaultVerbosity()
+                        .addConsumer(new JavaLoggerConsumer(java.util.logging.Logger.getGlobal()))))
+        .addLogger(new ParallelLogger()
+                .addPipeline(new Pipeline()
+                        .setVerbosity(StandardLevel.WARNING)
+                        .setProducer(new Producer()
+                                .append('[')
+                                .append(new TimestampFormatter())
+                                .append(' ')
+                                .append(new LevelFormatter())
+                                .append("] ")
+                                .append(new MessageFormatter()))
+                        .addConsumer(new ConsoleConsumer())
+                        .addConsumer(new FileConsumer(Paths.get("important.log"))))
+                .setDefaultParallelism());
+logger.fine(() -> "There are " + Runtime.getRuntime().availableProcessors() + " logical processors.");
+logger.throwable(new Exception(), "An exception was thrown.");
+```
+
+## Project
+
+Work is ongoing to produce version 2, which will feature parameterized messages, a `RotatingFileConsumer`, and more.  
+If you like this project, and use it in production, [let me know](mailto:dev@fmenza.it).

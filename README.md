@@ -11,13 +11,13 @@
 ## Download
 
 Artifacts are available for download in the *Releases* section of this repository, via Maven or Gradle.  
-When using a build tool, make sure to add [@MrSystem](https://github.com/MrSystem)'s repository:
+When using a build tool, make sure to add [@Menzani](https://github.com/Menzani)'s repository:
 
 **Maven**
 
 ```xml
 <repository>
-  <id>MrSystem@GitHub</id>
+  <id>Menzani@GitHub</id>
   <url>https://cdn.fmenza.it/maven</url>
 </repository>
 ```

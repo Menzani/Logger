@@ -8,7 +8,10 @@ package it.menzani.logger.impl;
 
 import it.menzani.logger.api.Formatter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class Producer {
     private final List<Object> fragments = new ArrayList<>();

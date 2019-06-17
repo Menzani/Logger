@@ -10,6 +10,8 @@ import it.menzani.logger.Profiler;
 import it.menzani.logger.impl.LogEntry;
 import it.menzani.logger.impl.Pipeline;
 
+import java.util.Queue;
+
 public final class ProfiledLogger extends PipelineLogger {
     private final ProfilerBuilder builder;
 
@@ -107,15 +109,15 @@ public final class ProfiledLogger extends PipelineLogger {
         }
 
         @Override
-        public void validate() {
-            super.validate();
-            assert logger != null;
-        }
-
-        @Override
         public ProfilerBuilder lock() {
             super.lock();
             return this;
+        }
+
+        @Override
+        protected void validate(Queue<String> missingProperties) {
+            super.validate(missingProperties);
+            assert logger != null;
         }
     }
 }

@@ -6,7 +6,10 @@
 
 package it.menzani.logger.impl;
 
-import it.menzani.logger.api.*;
+import it.menzani.logger.api.Clock;
+import it.menzani.logger.api.ExceptionHandler;
+import it.menzani.logger.api.Formatter;
+import it.menzani.logger.api.PipelineLogger;
 
 import java.util.Map;
 import java.util.Optional;

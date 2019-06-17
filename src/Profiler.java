@@ -11,6 +11,7 @@ import it.menzani.logger.api.Logger;
 import it.menzani.logger.impl.StandardLevel;
 
 import java.time.Duration;
+import java.util.Queue;
 
 public final class Profiler implements AutoCloseable {
     private final Logger logger;
@@ -55,11 +56,10 @@ public final class Profiler implements AutoCloseable {
         return new Builder();
     }
 
-    public static class Builder implements it.menzani.logger.Builder<Profiler> {
+    public static class Builder extends AbstractBuilder<Profiler> {
         private Logger logger;
         private Level level = StandardLevel.DEBUG;
         private String messageFormat;
-        private boolean locked;
 
         protected Builder() {
         }
@@ -82,28 +82,14 @@ public final class Profiler implements AutoCloseable {
             return this;
         }
 
-        protected void checkLocked() {
-            if (locked) throw it.menzani.logger.Builder.newLockedException();
+        @Override
+        protected void validate(Queue<String> missingProperties) {
+            if (messageFormat == null) missingProperties.add("messageFormat");
         }
 
         @Override
-        public void validate() {
-            if (messageFormat == null) throw it.menzani.logger.Builder.newValidationException("messageFormat");
-        }
-
-        @Override
-        public Profiler build() {
-            if (!locked) validate();
+        protected Profiler doBuild() {
             return new Profiler(logger, level, messageFormat);
-        }
-
-        @Override
-        public Builder lock() {
-            if (!locked) {
-                locked = true;
-                validate();
-            }
-            return this;
         }
     }
 }

@@ -6,10 +6,11 @@
 
 package it.menzani.logger.impl;
 
+import it.menzani.logger.Builder;
 import it.menzani.logger.ConfigurableThreadFactory;
 import it.menzani.logger.Profiler;
-import it.menzani.logger.api.*;
 import it.menzani.logger.api.Formatter;
+import it.menzani.logger.api.*;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
 public final class ParallelLogger extends PipelineLogger {
     private volatile ExecutorService executor;
     private ShutdownThread shutdownThread;
-    private volatile ProfiledLogger.ProfilerBuilder profilerBuilder;
+    private volatile Builder<Profiler> profilerBuilder;
     private final BlockingQueue<LogEntry> queue = new LinkedBlockingQueue<>();
 
     public ParallelLogger() {
@@ -200,9 +201,9 @@ public final class ParallelLogger extends PipelineLogger {
     }
 
     private final class ProfiledConsumer extends Consumer {
-        private final ProfiledLogger.ProfilerBuilder profilerBuilder;
+        private final Builder<Profiler> profilerBuilder;
 
-        private ProfiledConsumer(ProfiledLogger.ProfilerBuilder profilerBuilder) {
+        private ProfiledConsumer(Builder<Profiler> profilerBuilder) {
             this.profilerBuilder = profilerBuilder;
         }
 

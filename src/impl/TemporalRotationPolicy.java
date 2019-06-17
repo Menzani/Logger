@@ -12,7 +12,9 @@ import it.menzani.logger.api.RotationPolicy;
 
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.*;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 
 public final class TemporalRotationPolicy implements RotationPolicy {
     private final StringFormat nameFormat;

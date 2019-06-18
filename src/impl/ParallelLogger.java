@@ -240,7 +240,7 @@ public final class ParallelLogger extends PipelineLogger {
                             formatter, formatter.apply(entry, ParallelLogger.this)),
                     entry -> {
                         Optional<String> formattedFragment = entry.getValue();
-                        if (!formattedFragment.isPresent()) return true;
+                        if (formattedFragment.isEmpty()) return true;
                         formattedFragments.put(entry.getKey(), formattedFragment.get());
                         return false;
                     });

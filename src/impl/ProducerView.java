@@ -16,7 +16,7 @@ public final class ProducerView {
 
     ProducerView(List<Object> fragments, Set<Formatter> formatters) {
         this.fragments = new ArrayList<>(fragments);
-        this.formatters = Collections.unmodifiableSet(new HashSet<>(formatters));
+        this.formatters = Set.copyOf(formatters);
     }
 
     public Set<Formatter> getFormatters() {

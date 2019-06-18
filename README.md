@@ -10,29 +10,23 @@
 
 ## Download
 
-Artifacts are available for download in the *Releases* section of this repository, via Maven or Gradle.  
-When using a build tool, make sure to add [@Menzani's repository](https://www.menzani.eu/cdn/maven).  
-Find coordinates for specific versions in the description of each release.
+Find artifacts and Maven coordinates in _Releases_.  
+Build tools require [@Menzani's repository](https://www.menzani.eu/cdn/maven).
 
-The rest of this document applies to the latest revision of version **1**.
-
----
-
-Java 8 is required.  
-The automatic module name is `it.menzani.logger`.
+The module name is `eu.menzani.logger`.
 
 ## Package structure
 
 Domain-specific classes can be found in two packages:
-- `it.menzani.logger.api`
-- `it.menzani.logger.impl`
+- `eu.menzani.logger.api`
+- `eu.menzani.logger.impl`
 
-The `it.menzani.logger` package contains three facilities which can be used freely:
+The `eu.menzani.logger` package contains three facilities which can be used freely:
 - A `Builder<T>` interface
 - Lazy initialization done well
 - Profiler to measure code execution time
 
-Also, the `it.menzani.logger.api.Cloneable<T>` interface provides a straightforward alternative to Java's cloning mechanism.
+Also, the `eu.menzani.logger.api.Cloneable<T>` interface provides a straightforward alternative to Java's cloning mechanism.
 
 ## Class hierarchy
 

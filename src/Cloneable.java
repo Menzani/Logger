@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.api;
+package it.menzani.logger;
 
 public interface Cloneable<T> {
     T clone();

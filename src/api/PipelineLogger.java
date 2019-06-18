@@ -6,6 +6,7 @@
 
 package it.menzani.logger.api;
 
+import it.menzani.logger.Cloneable;
 import it.menzani.logger.impl.Pipeline;
 
 import java.util.Collections;

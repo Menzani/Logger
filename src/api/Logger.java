@@ -6,6 +6,8 @@
 
 package it.menzani.logger.api;
 
+import it.menzani.logger.Cloneable;
+
 public interface Logger extends Named, Toggleable, Cloneable<Logger> {
     void trace(LazyMessage lazyMessage);
 

@@ -6,7 +6,6 @@
 
 package it.menzani.logger;
 
-import it.menzani.logger.api.Cloneable;
 import it.menzani.logger.api.LazyMessage;
 
 import java.util.HashMap;

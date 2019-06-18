@@ -24,8 +24,8 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
     @Override
     public Builder<T> lock() {
         if (!locked) {
-            locked = true;
             checkValid();
+            locked = true;
         }
         return this;
     }
@@ -38,6 +38,11 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
     }
 
     protected abstract void validate(Queue<String> missingProperties);
+
+    @Override
+    public boolean isLocked() {
+        return locked;
+    }
 
     protected void checkLocked() {
         if (locked) throw new IllegalStateException("Builder is locked.");

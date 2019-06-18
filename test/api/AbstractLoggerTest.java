@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractLoggerTest {
     private BufferConsumer consumer;

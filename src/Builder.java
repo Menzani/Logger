@@ -10,4 +10,6 @@ public interface Builder<T> {
     T build();
 
     Builder<T> lock();
+
+    boolean isLocked();
 }

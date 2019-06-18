@@ -30,25 +30,25 @@ class ParameterizedMessageTest {
     }
 
     @Test
-    void tooFewArguments() throws Exception {
+    void tooFewArguments() {
         UUID arg = UUID.randomUUID();
         message = new ParameterizedMessage("Hello {} {}!", arg);
-        IllegalStateException e = assertThrows(IllegalStateException.class, message::evaluate);
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> message.evaluate());
         assertEquals("Could not produce parameterized message: too few arguments.", e.getMessage());
     }
 
     @Test
-    void tooManyArguments() throws Exception {
+    void tooManyArguments() {
         UUID arg0 = UUID.randomUUID(), arg1 = UUID.randomUUID();
         message = new ParameterizedMessage("Hello {}!", arg0, arg1);
-        IllegalStateException e = assertThrows(IllegalStateException.class, message::evaluate);
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> message.evaluate());
         assertEquals("Could not produce parameterized message: too many arguments.", e.getMessage());
     }
 
     @Test
-    void placeholderArgument() throws Exception {
+    void placeholderArgument() {
         message = new ParameterizedMessage("Hello {}!", (Object) null);
-        IllegalStateException e = assertThrows(IllegalStateException.class, message::evaluate);
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> message.evaluate());
         assertEquals("Could not produce parameterized message: placeholder argument not set.", e.getMessage());
     }
 

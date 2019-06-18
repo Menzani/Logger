@@ -78,8 +78,7 @@ public final class ParallelLogger extends PipelineLogger {
                         .map(ProducerView::getFormatters),
                 pipelines.stream()
                         .map(Pipeline::getConsumers))
-                .flatMap(Function.identity())
-                .map(Set.class::cast)
+                .flatMap(stream -> stream) // Function.identity() won't work.
                 .mapToInt(Set::size)
                 .max();
         return 1 + pipelines.size() + maxComponents.orElse(0);

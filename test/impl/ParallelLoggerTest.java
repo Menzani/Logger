@@ -74,6 +74,7 @@ class ParallelLoggerTest extends AbstractLoggerTest {
 
         @Override
         public void consume(LogEntry entry, String formattedEntry) {
+            // Do nothing
         }
 
         @Override

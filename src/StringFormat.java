@@ -21,7 +21,7 @@ public final class StringFormat implements Cloneable<StringFormat> {
         this(Objects.objectNotNull(format, "format"), new HashMap<>());
     }
 
-    private StringFormat(String format, Map<String, Object> valueSuppliers) {
+    private StringFormat(String format, HashMap<String, Object> valueSuppliers) {
         this.format = format;
         this.valueSuppliers = valueSuppliers;
     }

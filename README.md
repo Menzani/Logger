@@ -11,25 +11,7 @@
 ## Download
 
 Artifacts are available for download in the *Releases* section of this repository, via Maven or Gradle.  
-When using a build tool, make sure to add [@Menzani](https://github.com/Menzani)'s repository:
-
-**Maven**
-
-```xml
-<repository>
-  <id>Menzani@GitHub</id>
-  <url>https://cdn.fmenza.it/maven</url>
-</repository>
-```
-
-**Gradle**
-
-```groovy
-maven {
-    url 'https://cdn.fmenza.it/maven'
-}
-```
-
+When using a build tool, make sure to add [@Menzani's repository](https://www.menzani.eu/cdn/maven).  
 Find coordinates for specific versions in the description of each release.
 
 The rest of this document applies to the latest revision of version **1**.
@@ -96,5 +78,4 @@ logger.throwable(new Exception(), "An exception was thrown.");
 
 ## Project
 
-Work is ongoing to produce version 2, which will feature parameterized messages, a `RotatingFileConsumer`, and more.  
-If you like this project, and use it in production, [let me know](mailto:dev@fmenza.it).
+The next version will feature parameterized messages, a `RotatingFileConsumer`, and more.

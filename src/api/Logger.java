@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.api;
+package eu.menzani.logger.api;
 
-import it.menzani.logger.Cloneable;
+import eu.menzani.logger.Cloneable;
 
 public interface Logger extends Named, Toggleable, Cloneable<Logger> {
     void trace(LazyMessage lazyMessage);

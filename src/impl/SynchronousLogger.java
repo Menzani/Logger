@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.api.Clock;
-import it.menzani.logger.api.ExceptionHandler;
-import it.menzani.logger.api.Formatter;
-import it.menzani.logger.api.PipelineLogger;
+import eu.menzani.logger.api.PipelineLogger;
+import eu.menzani.logger.api.Clock;
+import eu.menzani.logger.api.ExceptionHandler;
+import eu.menzani.logger.api.Formatter;
 
 import java.util.Map;
 import java.util.Optional;

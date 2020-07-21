@@ -4,13 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.api;
+package eu.menzani.logger.api;
 
-import it.menzani.logger.Objects;
-import it.menzani.logger.impl.ConsoleExceptionHandler;
-import it.menzani.logger.impl.LogEntry;
-import it.menzani.logger.impl.ParameterizedMessage;
-import it.menzani.logger.impl.StandardLevel;
+import eu.menzani.logger.Objects;
+import eu.menzani.logger.impl.ConsoleExceptionHandler;
+import eu.menzani.logger.impl.LogEntry;
+import eu.menzani.logger.impl.ParameterizedMessage;
+import eu.menzani.logger.impl.StandardLevel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

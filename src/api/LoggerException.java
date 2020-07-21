@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.api;
+package eu.menzani.logger.api;
 
-import it.menzani.logger.Objects;
+import eu.menzani.logger.Objects;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

@@ -4,13 +4,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.Objects;
-import it.menzani.logger.api.Consumer;
-import it.menzani.logger.api.Filter;
-import it.menzani.logger.api.Formatter;
-import it.menzani.logger.api.LoggerException;
+import eu.menzani.logger.Objects;
+import eu.menzani.logger.api.Consumer;
+import eu.menzani.logger.api.Filter;
+import eu.menzani.logger.api.Formatter;
+import eu.menzani.logger.api.LoggerException;
 
 public final class PipelineLoggerException extends LoggerException {
     private final PipelineElement pipelineElement;

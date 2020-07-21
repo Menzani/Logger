@@ -4,10 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.api;
+package eu.menzani.logger.api;
 
-import it.menzani.logger.impl.Pipeline;
-import it.menzani.logger.impl.SynchronousLogger;
+import eu.menzani.logger.impl.Pipeline;
+import eu.menzani.logger.impl.SynchronousLogger;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +32,6 @@ class PipelineLoggerTest {
         assertEquals("No pipeline found with name: " + name, e.getMessage());
         Pipeline pipeline = new Pipeline(name);
         logger.addPipeline(pipeline).addPipeline(new Pipeline());
-        assertEquals(pipeline, logger.getPipeline(name));
+        Assertions.assertEquals(pipeline, logger.getPipeline(name));
     }
 }

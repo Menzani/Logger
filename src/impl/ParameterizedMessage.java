@@ -4,11 +4,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.Nullable;
-import it.menzani.logger.Objects;
-import it.menzani.logger.api.LazyMessage;
+import eu.menzani.logger.Nullable;
+import eu.menzani.logger.Objects;
+import eu.menzani.logger.api.LazyMessage;
 
 public final class ParameterizedMessage implements LazyMessage {
     private volatile String marker = "{}";

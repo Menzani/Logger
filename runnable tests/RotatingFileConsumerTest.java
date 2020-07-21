@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import it.menzani.logger.api.Logger;
-import it.menzani.logger.api.RotationPolicy;
-import it.menzani.logger.impl.*;
+import eu.menzani.logger.api.Logger;
+import eu.menzani.logger.api.RotationPolicy;
+import eu.menzani.logger.impl.*;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;

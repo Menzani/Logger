@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
 public final class EvaluationException extends Exception {
     EvaluationException(Exception cause) {

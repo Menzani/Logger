@@ -3,8 +3,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="it.menzani.logger" />
-      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" packagePrefix="it.menzani.logger" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="eu.menzani.logger" />
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" packagePrefix="eu.menzani.logger" />
       <sourceFolder url="file://$MODULE_DIR$/runnable tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/runtime" />
     </content>

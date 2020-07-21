@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import it.menzani.logger.api.Logger;
-import it.menzani.logger.impl.ConsoleConsumer;
-import it.menzani.logger.impl.Pipeline;
-import it.menzani.logger.impl.SynchronousLogger;
+import eu.menzani.logger.api.Logger;
+import eu.menzani.logger.impl.ConsoleConsumer;
+import eu.menzani.logger.impl.Pipeline;
+import eu.menzani.logger.impl.SynchronousLogger;
 
 import java.util.UUID;
 

@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.api;
+package eu.menzani.logger.api;
 
-import it.menzani.logger.impl.LogEntry;
-import it.menzani.logger.impl.PipelineLoggerException;
+import eu.menzani.logger.impl.LogEntry;
+import eu.menzani.logger.impl.PipelineLoggerException;
 
 public interface Consumer {
     void consume(LogEntry entry, String formattedEntry) throws Exception;

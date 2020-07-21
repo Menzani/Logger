@@ -4,12 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.Nullable;
-import it.menzani.logger.Objects;
-import it.menzani.logger.StringFormat;
-import it.menzani.logger.api.RotationPolicy;
+import eu.menzani.logger.api.RotationPolicy;
+import eu.menzani.logger.Nullable;
+import eu.menzani.logger.Objects;
+import eu.menzani.logger.StringFormat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger;
+package eu.menzani.logger;
 
 public final class CloneException extends RuntimeException {
     public CloneException(Cloneable<?> cloneable) {

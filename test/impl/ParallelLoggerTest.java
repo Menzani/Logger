@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.api.AbstractLoggerTest;
+import eu.menzani.logger.api.AbstractLoggerTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,7 +55,7 @@ class ParallelLoggerTest extends AbstractLoggerTest {
         return pipelines;
     }
 
-    private static class Filter implements it.menzani.logger.api.Filter {
+    private static class Filter implements eu.menzani.logger.api.Filter {
         private static final Filter instance = new Filter();
 
         @Override
@@ -69,7 +69,7 @@ class ParallelLoggerTest extends AbstractLoggerTest {
         }
     }
 
-    private static class Consumer implements it.menzani.logger.api.Consumer {
+    private static class Consumer implements eu.menzani.logger.api.Consumer {
         private static final Consumer instance = new Consumer();
 
         @Override

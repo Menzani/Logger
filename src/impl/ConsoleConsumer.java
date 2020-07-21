@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.api.Consumer;
+import eu.menzani.logger.api.Consumer;
 
 public final class ConsoleConsumer implements Consumer {
     @Override

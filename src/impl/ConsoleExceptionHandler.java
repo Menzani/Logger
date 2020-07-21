@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package it.menzani.logger.impl;
+package eu.menzani.logger.impl;
 
-import it.menzani.logger.api.ExceptionHandler;
-import it.menzani.logger.api.LoggerException;
+import eu.menzani.logger.api.ExceptionHandler;
+import eu.menzani.logger.api.LoggerException;
 
 public final class ConsoleExceptionHandler implements ExceptionHandler {
     private final String prefix;

@@ -16,9 +16,9 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.api.RotationPolicy;
 import eu.menzani.logger.Objects;
 import eu.menzani.logger.StringFormat;
+import eu.menzani.logger.api.RotationPolicy;
 
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;

@@ -16,9 +16,9 @@
 
 package eu.menzani.logger;
 
-import eu.menzani.logger.impl.StandardLevel;
 import eu.menzani.logger.api.Level;
 import eu.menzani.logger.api.Logger;
+import eu.menzani.logger.impl.StandardLevel;
 
 import java.time.Duration;
 import java.util.Queue;

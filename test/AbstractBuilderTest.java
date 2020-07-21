@@ -115,7 +115,8 @@ class AbstractBuilderTest {
 
     private static class Builder extends AbstractBuilder<Object> {
         private final Object object = new Object();
-        private Consumer<Queue<String>> validation = missingProperties -> {};
+        private Consumer<Queue<String>> validation = missingProperties -> {
+        };
 
         @Override
         protected Object doBuild() {

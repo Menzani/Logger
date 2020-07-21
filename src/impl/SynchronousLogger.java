@@ -16,10 +16,10 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.api.PipelineLogger;
 import eu.menzani.logger.api.Clock;
 import eu.menzani.logger.api.ExceptionHandler;
 import eu.menzani.logger.api.Formatter;
+import eu.menzani.logger.api.PipelineLogger;
 
 import java.util.Map;
 import java.util.Optional;

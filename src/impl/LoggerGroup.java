@@ -16,8 +16,8 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.api.*;
 import eu.menzani.logger.Cloneable;
+import eu.menzani.logger.api.*;
 
 import java.util.Collections;
 import java.util.NoSuchElementException;

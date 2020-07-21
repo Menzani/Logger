@@ -16,9 +16,9 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.api.RotationPolicy;
 import eu.menzani.logger.Objects;
 import eu.menzani.logger.api.Consumer;
+import eu.menzani.logger.api.RotationPolicy;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -16,8 +16,8 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.api.PipelineLogger;
 import eu.menzani.logger.api.AbstractLoggerTest;
+import eu.menzani.logger.api.PipelineLogger;
 
 class SynchronousLoggerTest extends AbstractLoggerTest {
     @Override

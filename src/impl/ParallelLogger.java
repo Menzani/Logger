@@ -16,11 +16,11 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.api.*;
 import eu.menzani.logger.Builder;
 import eu.menzani.logger.ConfigurableThreadFactory;
 import eu.menzani.logger.Profiler;
 import eu.menzani.logger.api.Formatter;
+import eu.menzani.logger.api.*;
 
 import java.util.*;
 import java.util.concurrent.*;

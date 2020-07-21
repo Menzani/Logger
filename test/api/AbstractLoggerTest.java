@@ -71,7 +71,9 @@ public abstract class AbstractLoggerTest {
     @EnumSource(StandardLevel.class)
     void logLazyMessageThrowingException(StandardLevel level) throws InterruptedException {
         Exception e = new Exception();
-        logger.log(level, () -> { throw e; });
+        logger.log(level, () -> {
+            throw e;
+        });
 
         String entry = consumer.nextEntry();
         final String errorMarker = AbstractLogger.ReservedLevel.ERROR.getMarker();

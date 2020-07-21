@@ -18,7 +18,10 @@ package eu.menzani.logger.impl;
 
 import eu.menzani.logger.api.Formatter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class ProducerView {
     private final List<Object> fragments;

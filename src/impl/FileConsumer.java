@@ -16,7 +16,7 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.AtomicLazy;
+import eu.menzani.logger.ConcurrentLazy;
 import eu.menzani.logger.Lazy;
 import eu.menzani.logger.Objects;
 import eu.menzani.logger.api.Consumer;
@@ -29,7 +29,7 @@ import java.nio.file.StandardOpenOption;
 
 public final class FileConsumer implements Consumer, Lazy.Initializer<PrintWriter> {
     private final Path file;
-    private final Lazy<PrintWriter> writer = new AtomicLazy<>(this, 10);
+    private final Lazy<PrintWriter> writer = new ConcurrentLazy<>(this);
 
     public FileConsumer(Path file) {
         this.file = Objects.objectNotNull(file, "file");

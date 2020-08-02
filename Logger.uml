@@ -40,7 +40,7 @@
     <node x="394.5438596491228" y="500.0">eu.menzani.logger.api.AbstractLogger.PipelineError</node>
     <node x="0.0" y="965.0">eu.menzani.logger.api.CloneException</node>
     <node x="17.25" y="735.0">eu.menzani.logger.impl.FileConsumer</node>
-    <node x="377.5" y="655.0">eu.menzani.logger.AtomicLazy</node>
+    <node x="377.5" y="655.0">eu.menzani.logger.ConcurrentLazy</node>
     <node x="401.9583333333333" y="0.0">eu.menzani.logger.api.Named</node>
     <node x="312.375" y="180.0">eu.menzani.logger.api.AbstractLogger</node>
     <node x="755.25" y="890.0">eu.menzani.logger.Profiler.Builder</node>
@@ -184,7 +184,7 @@
       <point x="467.2083333333333" y="50.0" />
       <point x="21.75" y="15.0" />
     </edge>
-    <edge source="eu.menzani.logger.AtomicLazy" target="eu.menzani.logger.Lazy">
+    <edge source="eu.menzani.logger.ConcurrentLazy" target="eu.menzani.logger.Lazy">
       <point x="0.0" y="-15.0" />
       <point x="432.5" y="630.0" />
       <point x="291.4375" y="630.0" />

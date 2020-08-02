@@ -16,7 +16,7 @@
 
 package eu.menzani.logger.impl;
 
-import eu.menzani.logger.AtomicLazy;
+import eu.menzani.logger.ConcurrentLazy;
 import eu.menzani.logger.Lazy;
 import eu.menzani.logger.Objects;
 import eu.menzani.logger.api.LazyMessage;
@@ -34,7 +34,7 @@ public final class LogEntry {
     public LogEntry(Level level, Object message, LazyMessage lazyMessage) {
         this.level = level;
         this.message = message;
-        this.lazyMessage = lazyMessage == null ? null : new AtomicLazy<>(lazyMessage::evaluate, 5);
+        this.lazyMessage = lazyMessage == null ? null : new ConcurrentLazy<>(lazyMessage::evaluate);
     }
 
     public Level getLevel() {

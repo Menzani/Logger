@@ -1,4 +1,9 @@
-.idea/workspace.xml
-.idea/misc.xml
+.idea/*
+!.idea/artifacts
+!.idea/copyright
+!.idea/libraries
+!.idea/runConfigurations
+!.idea/modules.xml
+
 lib/
 runtime/

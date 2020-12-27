@@ -7,10 +7,10 @@
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" packagePrefix="eu.menzani.logger" />
       <sourceFolder url="file://$MODULE_DIR$/runnable tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/runtime" />
+      <excludeFolder url="file://$MODULE_DIR$/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="JUnit" level="project" />
-    <orderEntry type="library" name="RingBuffer" level="project" />
   </component>
 </module>
